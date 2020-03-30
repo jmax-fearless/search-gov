@@ -1,12 +1,13 @@
 version: '2.2'
 services:
-  es01:
+  es68:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.8.7
     container_name: sg_es_68
     environment:
-      - node.name=es01
+      - node.name=es68
       - cluster.name=es-docker-cluster-68
       - bootstrap.memory_lock=true
+      - xpack.license.self_generated.type=trial
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
@@ -17,27 +18,58 @@ services:
     ports:
       - 9268:9200
     networks:
-      - elastic
+      - elastic68
 
-  kib01:
+  kib68:
     image: docker.elastic.co/kibana/kibana:6.8.7
     container_name: sg_kib_68
     ports:
-      - 5601:5601
+      - 5668:5601
     environment:
-      ELASTICSEARCH_URL: http://es01:9200
-      ELASTICSEARCH_HOSTS: http://es01:9200
+      ELASTICSEARCH_URL: http://es68:9200
+      ELASTICSEARCH_HOSTS: http://es68:9200
     networks:
-      - elastic
+      - elastic68
+
+  es56:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
+    container_name: sg_es_56
+    environment:
+      - node.name=es56
+      - cluster.name=es-docker-cluster-56
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    ports:
+      - 9256:9200
+    networks:
+      - elastic56
+
+  kib56:
+    image: docker.elastic.co/kibana/kibana:5.6.16
+    container_name: sg_kib_56
+    ports:
+      - 5656:5601
+    environment:
+      ELASTICSEARCH_URL: http://es56:9200
+      ELASTICSEARCH_HOSTS: http://es56:9200
+    networks:
+      - elastic56
 
 volumes:
   data01:
     driver: local
   data02:
     driver: local
-  data03:
-    driver: local
 
 networks:
-  elastic:
+  elastic56:
+    driver: bridge
+  elastic68:
     driver: bridge
