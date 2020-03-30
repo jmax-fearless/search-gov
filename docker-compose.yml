@@ -2,7 +2,7 @@ version: '2.2'
 services:
   es68:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.8.7
-    container_name: sg_es_68
+    container_name: elastic_68
     environment:
       - node.name=es68
       - cluster.name=es-docker-cluster-68
@@ -22,7 +22,7 @@ services:
 
   kib68:
     image: docker.elastic.co/kibana/kibana:6.8.7
-    container_name: sg_kib_68
+    container_name: kibana_68
     ports:
       - 5668:5601
     environment:
@@ -33,7 +33,7 @@ services:
 
   es56:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
-    container_name: sg_es_56
+    container_name: elastic_56
     environment:
       - node.name=es56
       - cluster.name=es-docker-cluster-56
@@ -53,7 +53,7 @@ services:
 
   kib56:
     image: docker.elastic.co/kibana/kibana:5.6.16
-    container_name: sg_kib_56
+    container_name: kibana_56
     ports:
       - 5656:5601
     environment:
