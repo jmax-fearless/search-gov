@@ -18,18 +18,18 @@ services:
     ports:
       - 9268:9200
     networks:
-      - elastic68
+      - elastic
 
-  kib68:
-    image: docker.elastic.co/kibana/kibana:6.8.7
-    container_name: kibana_68
-    ports:
-      - 5668:5601
-    environment:
-      ELASTICSEARCH_URL: http://es68:9200
-      ELASTICSEARCH_HOSTS: http://es68:9200
-    networks:
-      - elastic68
+ # kib68:
+ #   image: docker.elastic.co/kibana/kibana:6.8.7
+ #   container_name: kibana_68
+ #   ports:
+ #     - 5668:5601
+ #   environment:
+ #     ELASTICSEARCH_URL: http://es68:9200
+ #     ELASTICSEARCH_HOSTS: http://es68:9200
+ #   networks:
+ #     - elastic
 
   es56:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
@@ -49,18 +49,18 @@ services:
     ports:
       - 9256:9200
     networks:
-      - elastic56
+      - elastic
 
-  kib56:
-    image: docker.elastic.co/kibana/kibana:5.6.16
-    container_name: kibana_56
-    ports:
-      - 5656:5601
-    environment:
-      ELASTICSEARCH_URL: http://es56:9200
-      ELASTICSEARCH_HOSTS: http://es56:9200
-    networks:
-      - elastic56
+ # kib56:
+ #   image: docker.elastic.co/kibana/kibana:5.6.16
+ #   container_name: kibana_56
+ #   ports:
+ #     - 5656:5601
+ #   environment:
+ #     ELASTICSEARCH_URL: http://es56:9200
+ #     ELASTICSEARCH_HOSTS: http://es56:9200
+ #   networks:
+ #     - elastic
 
 volumes:
   data01:
@@ -69,7 +69,5 @@ volumes:
     driver: local
 
 networks:
-  elastic56:
-    driver: bridge
-  elastic68:
+  elastic:
     driver: bridge
