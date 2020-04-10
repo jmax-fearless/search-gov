@@ -1,0 +1,34 @@
+version: '2.2'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
+    environment:
+      - node.name=es56
+      - cluster.name=es-docker-cluster-56
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9256:9200
+    networks:
+      - elastic
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:5.6.16
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5656:5601
+    environment:
+      - xpack.security.enabled=false
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    networks:
+      - elastic
+
+networks:
+  elastic:
+    driver: bridge
