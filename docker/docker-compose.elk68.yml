@@ -1,0 +1,35 @@
+version: '2.2'
+services:
+  es68:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.7
+    container_name: elastic_68
+    environment:
+      - node.name=es68
+      - cluster.name=es-docker-cluster-68
+      - bootstrap.memory_lock=true
+      - xpack.license.self_generated.type=trial
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9268:9200
+    networks:
+      - elastic
+
+  kib68:
+    image: docker.elastic.co/kibana/kibana:6.8.7
+    #depends on...
+    container_name: kibana_68
+    ports:
+      - 5668:5601
+    environment:
+      ELASTICSEARCH_URL: http://es68:9200
+      ELASTICSEARCH_HOSTS: http://es68:9200
+    networks:
+      - elastic
+
+networks:
+  elastic:
+    driver: bridge
