@@ -1,6 +1,6 @@
 version: '2.2'
 services:
-  es68:
+  elasticsearch_68:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.8.7
     container_name: elastic_68
     environment:
@@ -18,15 +18,15 @@ services:
     networks:
       - elastic
 
-  kib68:
+  kibana_68:
     image: docker.elastic.co/kibana/kibana:6.8.7
-    #depends on...
     container_name: kibana_68
+    depends_on:
+      - elasticsearch_68
     ports:
       - 5668:5601
     environment:
-      ELASTICSEARCH_URL: http://es68:9200
-      ELASTICSEARCH_HOSTS: http://es68:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch_68:9200
     networks:
       - elastic
 
