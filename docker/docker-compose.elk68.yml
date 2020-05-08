@@ -16,7 +16,7 @@ services:
     ports:
       - 9268:9200
     networks:
-      - elastic
+      - elastic68
 
   kibana_68:
     image: docker.elastic.co/kibana/kibana:6.8.7
@@ -28,8 +28,8 @@ services:
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch_68:9200
     networks:
-      - elastic
+      - elastic68
 
 networks:
-  elastic:
+  elastic68:
     driver: bridge

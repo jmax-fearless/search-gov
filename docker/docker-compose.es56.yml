@@ -16,7 +16,7 @@ services:
     ports:
       - 9256:9200
     networks:
-      - elastic
+      - elastic56
 
   kibana_56:
     image: docker.elastic.co/kibana/kibana:5.6.16
@@ -29,8 +29,8 @@ services:
       - xpack.security.enabled=false
       - ELASTICSEARCH_URL=http://elasticsearch_56:9200
     networks:
-      - elastic
+      - elastic56
 
 networks:
-  elastic:
+  elastic56:
     driver: bridge
