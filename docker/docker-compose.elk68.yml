@@ -1,13 +1,16 @@
 version: '2.2'
 services:
   elasticsearch_68:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.7
+    build:
+      context: ./
+      dockerfile: Dockerfile.elasticsearch
     container_name: elastic_68
     environment:
       - node.name=es68
       - cluster.name=es-docker-cluster-68
       - bootstrap.memory_lock=true
       - xpack.license.self_generated.type=trial
+      - reindex.remote.whitelist=localhost:9256
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
