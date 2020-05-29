@@ -33,7 +33,7 @@ executors:
           bootstrap.memory_lock: true
           cluster.name: es68
           discovery.type: single-node
-          http.port: 9268
+          http.port: 9200
           xpack.license.self_generated.type: trial
           xpack.monitoring.enabled: false
           xpack.security.enabled: false

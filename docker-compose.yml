@@ -36,6 +36,11 @@ services:
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
 
+  redis:
+    image: redis:5.0.9
+    ports:
+      - 6379:6379
+
 volumes:
   es_data:
   db_data:

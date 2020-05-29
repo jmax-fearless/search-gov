@@ -19,6 +19,13 @@ You will need the version of Ruby specified in `.ruby-version`. Verify that your
 You should see output similar to the following:
 
     ruby 2.5.5p157 (2019-03-15 revision 67260) [x86_64-darwin18]
+    
+## Gems
+
+For Rails 5, we use bundler; you should be able to get all the rest of the gems needed for this project like this:
+
+    gem install bundler
+    bundle install
 
 ## Packages
 
@@ -29,12 +36,6 @@ a C++ compiler:
     brew install gcc
     brew install protobuf
 
-## Gems
-
-For Rails 4, we use bundler; you should be able to get all the rest of the gems needed for this project like this:
-
-    gem install bundler
-    bundle install
 
 ## Service credentials; how we protect secrets
 
