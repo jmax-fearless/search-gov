@@ -7,6 +7,9 @@
 
 ## Dependencies
 
+### Docker
+We recommend using [Docker](https://www.docker.com/get-started) to install all the dependencies and run the necessary services below. 
+
 ### Ruby
 
 You will need the version of Ruby specified in `.ruby-version`. Verify that your path points to the correct version of Ruby:
@@ -126,17 +129,10 @@ A few tips when working with asset pipeline:
 
         Rails.application.assets['relative_path/to_asset.ext']
 
-## JAVA
-
-Install Java 8.
-
-    $ brew tap caskroom/versions
-
-    $ brew cask install java8
     
 ## Elasticsearch
 
-We're using [Elastic](http://www.elasticsearch.org/) v1.7.3 for fulltext search and query analytics.
+We're using [Elastic](http://www.elasticsearch.org/) 6.8 for fulltext search and query analytics.
 
 On a Mac, Elasticsearch is easy to install by following these instructions:
   https://www.elastic.co/guide/en/elasticsearch/reference/1.7/_installation.html
@@ -145,43 +141,7 @@ To check settings and directory locations:
 
     $ curl "localhost:9200/_nodes/settings?pretty=true"
 
-To change the defaults, like number of shards/replicas, edit this file:
 
-    $ sudo vi /usr/local/Cellar/elasticsearch/1.7.3/config/elasticsearch.yml
-
-    index.number_of_shards: 1
-    index.number_of_replicas: 0
-
-For the time being, add this to the end of the file to re-enable MVEL scripting for sandboxed languages like Groovy:
-
-    script.disable_dynamic: false
-
-You may need to re-install any plugins you were using locally:
-
-    $ plugin -i elasticsearch/marvel/latest
-    $ plugin -i polyfractal/elasticsearch-inquisitor
-    $ plugin -i mobz/elasticsearch-head
-    $ plugin -i elasticsearch/elasticsearch-cloud-aws/2.7.0
-
-If you install Marvel, you probably don't want to monitor your local cluster, so add this to your `elastisearch.yml` file:
-
-    marvel.agent.enabled: false
-
-The default JVM heap is 256m with a max of 1g. You can increase it by editing your `~/Library/LaunchAgents/homebrew.mxcl.elasticsearch.plist` file like this:
-
-    <dict>
-      <key>ES_JAVA_OPTS</key>
-      <string>-Xss200000</string>
-      <key>ES_HEAP_SIZE</key>
-      <string>4g</string>
-      <key>ES_MAX_MEM</key>
-      <string>4g</string>
-    </dict>
-
-Now restart it:
-
-    $ launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.elasticsearch17.plist
-    $ launchctl load ~/Library/LaunchAgents/homebrew.mxcl.elasticsearch17.plist
 
 If you aren't using Homebrew to install and configure Elasticsearch, follow the [instructions](http://www.elasticsearch.org/download/) to download and run it.
 
