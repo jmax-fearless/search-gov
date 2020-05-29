@@ -5,12 +5,9 @@
  [![Build Status](https://circleci.com/gh/GSA/search-gov.svg?style=svg)](https://circleci.com/gh/GSA/search-gov)
  [![Maintainability](https://api.codeclimate.com/v1/badges/fd0577360749c9b3d166/maintainability)](https://codeclimate.com/github/GSA/search-gov/maintainability)
 
-## Rails
+## Dependencies
 
-If you have no experience with Ruby on Rails, this is not the document for you. This README assumes you already have a
-working development environment for Rails up and running, including the database drivers.
-
-## Ruby
+### Ruby
 
 You will need the version of Ruby specified in `.ruby-version`. Verify that your path points to the correct version of Ruby:
 
@@ -20,14 +17,14 @@ You should see output similar to the following:
 
     ruby 2.5.5p157 (2019-03-15 revision 67260) [x86_64-darwin18]
     
-## Gems
+### Gems
 
 For Rails 5, we use bundler; you should be able to get all the rest of the gems needed for this project like this:
 
     gem install bundler
     bundle install
 
-## Packages
+### Packages
 
 The [cld3](https://github.com/akihikodaki/cld3-ruby) gem, which we use for language detection, depends on Google's
 [protocol buffers](https://developers.google.com/protocol-buffers/) and
