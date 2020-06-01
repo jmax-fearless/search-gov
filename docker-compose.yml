@@ -1,6 +1,17 @@
 version: '3.8'
 
 services:
+  web:
+    build: .
+    depends_on:
+      - elasticsearch
+      - db
+    command: bin/rails server --binding 0.0.0.0
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.8.9
     environment:

@@ -8,7 +8,7 @@
 ## Dependencies
 
 ### Docker
-We recommend using [Docker](https://www.docker.com/get-started) to install all the dependencies and run the necessary services below. 
+We recommend using [Docker](https://www.docker.com/get-started) to install all the dependencies and run the necessary services below. You can run them all with `docker-compose up`. Alternatively, you can run them individually, i.e. `docker-compose up elasticsearch`.
 
 ### Ruby
 
