@@ -7,9 +7,6 @@
 
 ## Dependencies
 
-### Docker
-We recommend using [Docker](https://www.docker.com/get-started) to install all the dependencies and run the necessary services below. You can run them all with `docker-compose up`. Alternatively, you can run them individually, i.e. `docker-compose up elasticsearch`.
-
 ### Ruby
 
 You will need the version of Ruby specified in `.ruby-version`. Verify that your path points to the correct version of Ruby:
@@ -26,7 +23,36 @@ For Rails 5, we use bundler; you should be able to get all the rest of the gems 
 
     gem install bundler
     bundle install
+    
+### Services
+The required services listed below can be configured and run using [Docker](https://www.docker.com/get-started).
+You can run them all with `docker-compose up`. Alternatively, you can run them individually, i.e. `docker-compose up elasticsearch`. If you prefer to install and run the services without Docker, see the [wiki](https://github.com/GSA/search-gov/wiki/Local-Installation-and-Management-of-dependencies).
 
+* [Elasticsearch](https://www.elastic.co/elasticsearch/) 6.8
+
+We're using [Elasticsearch](http://www.elasticsearch.org/) 6.8 for fulltext search and query analytics.
+
+To check settings and directory locations:
+
+<!--TODO: UPDATE PORT--> 
+<!--TODO: INSTALL ES 7?--> 
+
+    $ curl "localhost:9200/_nodes/settings?pretty=true"
+    
+* [Kibana](https://www.elastic.co/kibana) - Kibana is not required, but can be very useful for debugging Elasticsearch. Confirm Kibana is available in your browser at http://localhost:5601.
+
+* [MySQL](https://dev.mysql.com/doc/refman/5.6/en/) 5.6 - database
+* [Redis](https://redis.io/) 5.0 - We're using the Redis key-value store for caching, queue workflow via Resque, and some analytics.
+
+### Packages
+The packages below are included in the custom Docker image used for building the search-gov app container.
+
+* gcc - C++ compiler, required by the [cld3](https://github.com/akihikodaki/cld3-ruby) gem, which we use for language detection
+* protobuf - Google's
+[protocol buffers](https://developers.google.com/protocol-buffers/) package, also required by the cld gem
+
+
+--------------------------------------------------
 ### Packages
 
 The [cld3](https://github.com/akihikodaki/cld3-ruby) gem, which we use for language detection, depends on Google's
@@ -55,67 +81,12 @@ Anything listed in the `secret_keys` entry of that file will automatically be ma
 
 ## Database
 
-Install MySQL 5.6.x using Homebrew:
-```
-$ brew update
-$ brew search mysql
-```
-The output should include `mysql@5.6` listed under `Formulae`.
-```
-$ brew install mysql56
-```
-
-Follow the instructions provided by Homebrew during installation.
-
-Add the following to your database server's my.cnf file (normally located at `/usr/local/etc/my.cnf`):
-
-```
-[mysqld]
-innodb_strict_mode = ON
-innodb_large_prefix = ON
-innodb_file_format = Barracuda
-```
-
-Start or restart MySQL:
-```
-$ brew services start mysql56
-```
-
-You may need to reinstall the mysql2 gem if you changed your MySQL version:
-
-    gem uninstall mysql2
-    bundle install
 
 Create and setup your development and test databases. The database.yml file assumes you have a local database server up and running (MySQL 5.6.x), accessible from user 'root' with no password.
 
-    $ rake db:setup
+    $ docker-compose run --rm web bin/rails db:setup
     $ rake db:test:prepare
 
-### Troubleshooting your database setup
-
-Problems may arise if you have multiple versions of MySQL installed, or if you have installed MySQL via the OSX installer instead of or in addition to Homebrew. Below are some troubleshooting steps:
-
-Verify that you are running the Homebrew-installed version of MySQL (as indicated by the `/usr/local/opt/mysql@5.6` directory):
-```
-$ ps -ef | grep mysql
-  502 26965     1   0 12:23PM ??         0:00.04 /bin/sh /usr/local/opt/mysql@5.6/bin/mysqld_safe --bind-address=127.0.0.1 --datadir=/usr/local/var/mysql
-```
-
-Verify that Rails is using the Homebrew version:
-```
-$ rails db
-```
-
-The output should include:
-```
-Server version: 5.6.<x> Homebrew
-```
-
-It may also help to specify the Homebrew directories when reinstalling the `mysql2` gem:
-```
-$ gem uninstall mysql2
-$ gem install mysql2 -v '0.3.11' --   --with-mysql-lib=$(brew --prefix mysql56)/lib   --with-mysql-dir=$(brew --prefix mysql56)   --with-mysql-config=$(brew --prefix mysql56)/bin/mysql_config   --with-mysql-include=$(brew --prefix mysql56)/include
-```
 
 ## Asset pipeline
 
@@ -130,31 +101,7 @@ A few tips when working with asset pipeline:
         Rails.application.assets['relative_path/to_asset.ext']
 
     
-## Elasticsearch
 
-We're using [Elastic](http://www.elasticsearch.org/) 6.8 for fulltext search and query analytics.
-
-On a Mac, Elasticsearch is easy to install by following these instructions:
-  https://www.elastic.co/guide/en/elasticsearch/reference/1.7/_installation.html
-
-To check settings and directory locations:
-
-    $ curl "localhost:9200/_nodes/settings?pretty=true"
-
-
-
-If you aren't using Homebrew to install and configure Elasticsearch, follow the [instructions](http://www.elasticsearch.org/download/) to download and run it.
-
-In addition, Elasticsearch 5.6 is also required.  Fortunately, this version is dockerized and can be run locally entirely within a docker container.  
-To facilitate use of this container a makefile has been provided with the following 3 commands:
-    
-    make pull-elastic - This pulls the desired container from dockerhub
-    
-    make run-elastic - Runs the docker container with the correct ports
-    
-    make check-elastic - Tests that the elastic search container is currently running
-     
-     
      
 ### Indexes
 
@@ -182,25 +129,8 @@ Same thing, but using Resque to index in parallel:
 
     rake usasearch:elasticsearch:resque_migrate[FeaturedCollection]
 
-Install the [Inquisitor](https://github.com/polyfractal/elasticsearch-inquisitor) plugin to see how our analyzers look at text.
 
-    http://localhost:9200/_plugin/inquisitor/#/analyzers
 
-Install the [Head](http://mobz.github.io/elasticsearch-head/) plugin so you have a simple GUI for testing queries and looking at index data.
-
-    http://localhost:9200/_plugin/head/
-
-## Redis
-
-We're using the Redis key-value store for caching, queue workflow via Resque, and some analytics. Download and install the Redis server:
-
-<http://redis.io/download>
-<http://redis.io/topics/quickstart>
-
-Verify that redis-server is in your path
-
-    $ which redis-server
-    /opt/redis/bin/redis-server
 
 ## Imagemagick
 
@@ -376,90 +306,3 @@ You can also turn on profiling and look into that (see https://newrelic.com/docs
 
 ### Additional developer resources
 * [Local i14y setup](https://github.com/GSA/usasearch/blob/master/README_I14Y.markdown)
-
-# Writing Stories
-1. Titles should include a 'should' or 'should not' statement.
-
-1. Try to follow the 'As a ..., I want to ..., because/so that...' format for the description to make sure we're starting from the same page. Example:  “As a developer, I would like to have story descriptions written in a consistent format, so that I can understand what is being requested.” 
-
-# Working on Stories
-
-1. Pick the next story off the top of the queue on Tracker and make sure you understand the intent behind it. Click the "Start" button so nobody else starts working on it. But before you click "Start", do you have a firm idea of what you will need to do in order to click "Finished"? How will you know when you are done?
-
-1. For user-facing content (e.g., Search Engine Results Pages [SERPs]), you'll want to raise these questions with the story owner:
-    * How should this feature behave for non-English traffic? Is there any localized text I will need?
-    * Should this feature have a mobile web implementation?
-    * Is there an admin component to this feature?
-    * Does the usage of this feature need to be tracked?
-
-1. Make sure you are comfortable with the number of story points associated with the feature. As a rule of thumb, zero points means you can knock it out in an hour or less, one point means a half-day or so, two points is a full day or so of work, and four points is a few days. Generally we decompose eight point stories (epics) into smaller stories. If someone already assigned points to the story and you disagree, then change it to reflect your viewpoint.
-
-1. Now that you have a good idea of how to get started and how to be finished, make sure you have the latest code:
-
-        git pull
-
-1. Some people like to create a story branch so that all the work for a story is happening somewhere outside of master. For quick 1-point stories, this isn't so important, but if you happen to be working on a larger story that gets sidelined and need to commit something else to master, having story branches makes it easy to keep track of everything.
-
-1. Write acceptance tests in rspec and/or cucumber that will specify whether the feature is implemented properly or not.
-
-1. Write the minimal amount of code needed to make those tests pass.
-
-1. Run regression tests to make sure all prior functionality still passes tests
-
-        rake
-
-    The entire test suite should always be 100% green. If anything fails at any time, it's the new top priority to fix it, and no developer should check in code on top of broken tests.
-
-1. Now that you are green, have a look through all your changes to make sure everything that is in there needs to be there.
-
-    For using-facing story, does it work across browsers? (IE7 and up on Admin Center, IE8 and up on SERPs)
-    
-    Can you delete any lines of code? Can you refactor anything?
-    
-    Check for issues in your changes using [Code Climate](https://codeclimate.com/repos/5266dfe9f3ea0018fa0523e0/feed). Follow the [instructions from Code Climate](https://github.com/codeclimate/codeclimate/blob/master/README.md) to install the Code Climate CLI to run those tests locally.
-
-1. If you did any work with web forms, check for any XSS or SQL Injection vulnerabilities with the Firefox plugins from Seccom labs (http://labs.securitycompass.com/index.php/exploit-me/). We have a third party scan our site monthly for XSS vulnerabilities (among other things), and if they discover XSS vulnerabilities before we do, it could risk our [C&A](http://en.wikipedia.org/wiki/Certification_and_Accreditation) standing.
-
-1. Create a Pull Request
-
-1. Once code is reviewed and pushed to staging, you may then mark story as "Delivered". This means it's ready and visible for acceptance testing on the demo environment. Add an acceptance test in the story comments so someone else can easily verify what you have done, including ways to highlight various scenarios and corner cases (e.g., "By searching on 'beef recalls', you can see how the UI looks when there are many recalls listed...", or "Go to this URL on staging to see how it behaves in Spanish for affiliates").
-
-1. Goto Step 1
-
-<!---
-
-1. Check in code to your local git repo (use `git status` and `git add` until everything is staged):
-
-        git commit
-
-    It's easier for other developers to see the work you did for a story in a single commit, rather than spread out over a bunch of checkpoints. It's a good idea to do many local commits while working on a story, and then roll those up into a single commit with Git either by continually amending your prior commit, or by doing an interactive rebase and squashing everything. The exception to this is the 'coverage/' directory that gets updated with 'rcov'. That's better off in its own commit, so your code changes aren't lost among several hundred auto-generated HTML files.
-
-    By using the [special syntax](https://www.pivotaltracker.com/help/api?version=v3#scm_post_commit_message_syntax) in the commit message, you can associate the commit with one or more Tracker story IDs and (optionally) a state change for the story.
-
-1. Make sure all your code gets touched by a test, at least:
-
-        open coverage/rcov/index.html
-
-1. Run assets:precompile before pushing to origin if you modified one or more assets. Verify your generated assets in the public/assets directory. Always clean your public/assets directory after running assets:precompile. You will not see changes to your code in app/assets if the same asset exists in public/assets.
-
-        rake assets:precompile
-
-1. Push code up to the origin. Before you do this, remember that you are committing to the master branch, and future production deployments will ideally be grabbing everything from this branch. For this reason, you'll only want to push to origin/master code that is pretty much ready for production deployment, or could be ready fairly soon, say after a day or two of iterating on feedback. One good rule of thumb is the "Washington Post" test, as it's a scenario that is raised fairly often. Before pushing to origin, ask yourself, "If this work I've just done somehow finds its way into a Washington Post article with a screenshot, will everyone be OK with that?". If so, then....
-
-        git push
-
-1. Problems doing the push? Someone else may have checked in code since your last pull, so
-
-        git pull
-        rake
-        git push
-
-1. Mark story as "Finished" on Tracker. This means you are done testing/coding.
-
-1. Deploy to demo (or have someone with VPN access deploy for you).
-
-        cap deploy
-
--->
-
-
