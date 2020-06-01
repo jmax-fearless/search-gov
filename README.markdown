@@ -50,6 +50,7 @@ The packages below are included in the custom Docker image used for building the
 * gcc - C++ compiler, required by the [cld3](https://github.com/akihikodaki/cld3-ruby) gem, which we use for language detection
 * protobuf - Google's
 [protocol buffers](https://developers.google.com/protocol-buffers/) package, also required by the cld gem
+* Java 
 
 
 --------------------------------------------------

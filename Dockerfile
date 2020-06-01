@@ -1,7 +1,7 @@
 FROM ruby:2.5
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-  default-jdk \
+  default-jre \
   default-mysql-client \
   libprotobuf-dev \
   protobuf-compiler
