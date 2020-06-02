@@ -47,28 +47,12 @@ To check settings and directory locations:
 ### Packages
 The packages below are included in the custom Docker image used for building the search-gov app container.
 
-* C++ compiler, required by the [cld3](https://github.com/akihikodaki/cld3-ruby) gem, which we use for language detection
-* Google's [protocol buffers](https://developers.google.com/protocol-buffers/), also required by the cld gem
+* C++ compiler - required by the [cld3](https://github.com/akihikodaki/cld3-ruby) gem, which we use for language detection
+* Google's [protocol buffers](https://developers.google.com/protocol-buffers/) - also required by the cld gem
 * [Java Runtime Environment](https://www.java.com/en/download/)
-
-$ docker-compose ps
-           Name                         Command               State                Ports
-------------------------------------------------------------------------------------------------------
-search-gov_elasticsearch_1   /usr/local/bin/docker-entr ...   Up      0.0.0.0:9200->9200/tcp, 9300/tcp
-search-gov_kibana_1          /usr/local/bin/kibana-docker     Up      0.0.0.0:5601->5601/tcp
-search-gov_mysql_1           docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp
-search-gov_redis_1           docker-entrypoint.sh redis ...   Up      0.0.0.0:6379->6379/tcp
-search-gov_web_1             bin/rails server --binding ...   Up      0.0.0.0:3000->3000/tcp
+* [PhantomJS](http://phantomjs.org/download.html) - required to run JavaScript in Cucumber features
 
 --------------------------------------------------
-### Packages
-
-The [cld3](https://github.com/akihikodaki/cld3-ruby) gem, which we use for language detection, depends on Google's
-[protocol buffers](https://developers.google.com/protocol-buffers/) and
-a C++ compiler:
-
-    brew install gcc
-    brew install protobuf
 
 
 ## Service credentials; how we protect secrets
@@ -136,34 +120,7 @@ Same thing, but using Resque to index in parallel:
 
     rake usasearch:elasticsearch:resque_migrate[FeaturedCollection]
 
-
-
-
-## Imagemagick
-
-We use Imagemagick to identify some image properties. It can also be installed with Homebrew on a Mac.
-
-    $ brew install imagemagick
-
 # Tests
-
-We use poltergeist gem to test Javascript. This gem depends on PhantomJS.
-
-Download and install PhantomJS:
-
-<http://phantomjs.org/download.html>
-
-It can also be installed with Homebrew on a Mac.
-
-    $ brew tap homebrew/cask
-
-    $ brew cask install phantomjs
-
-If you see ```Error: The `brew link` step did not complete successfully``` when installing phantomjs, 
-
-you may need to overwrite the symbolic link.
-    
-    $ brew link --overwrite phantomjs198
 
 Make sure the unit tests, functional and integration tests run:
 
@@ -277,7 +234,7 @@ Odie documents will take days, and should run as low priority. But fetching and 
 When in doubt, just use Resque.enqueue() instead of Resque.enqueue_with_priority() to put it on the normal priority queue.
 
 ### Scheduled jobs
-We use the [resque-scheduler](https://github.com/resque/resque-scheduler) gem to schedule delayed jobs. Use [ActiveJob](http://api.rubyonrails.org/classes/ActiveJob/Core/ClassMethods.html)'s `:wait` or `:wait_until` options to enqueue delayed jobs, or schedule them in `config/resque_schedule.yml`.
+We use the [resque-scheduler](https://github.com/resque/resque-scheduler) gem to schedule delayed jobs. Use [ActiveJob](http://api.rubyonrails.org/classes/ActiveJob/Core/ClassMethods.html)'s `:wait` or `:wait_until` options/ph to enqueue delayed jobs, or schedule them in `config/resque_schedule.yml`.
 
 Example:
 
