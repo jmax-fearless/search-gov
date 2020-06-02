@@ -16,8 +16,8 @@ services:
       - gem_cache:/gems
     environment:
       - DB_HOST=mysql
-      - ES_6_HOST=elasticsearch6:9200
-      - ES_7_HOST=elasticsearch7:9200
+      - ES_A_HOST=http://elasticsearch6:9200
+      - ES_B_HOST=http://elasticsearch7:9200
       - REDIS_HOST=redis
 
 
