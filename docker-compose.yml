@@ -16,6 +16,7 @@ services:
     environment:
       - DB_HOST=mysql
       - ES_HOST=elasticsearch:9200
+      - REDIS_HOST=redis
 
 
   # TODO: COPY SECRETS

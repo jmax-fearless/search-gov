@@ -8,7 +8,7 @@ module TestServices
 
   # TODO: ?
   def start_redis
-    #return
+    return
 
     Dir.mkdir(REDIS_CACHE_PATH) unless File.directory?(REDIS_CACHE_PATH)
     Dir.mkdir(REDIS_PIDS_PATH) unless File.directory?(REDIS_PIDS_PATH)
@@ -30,7 +30,7 @@ module TestServices
   end
 
   def stop_redis
-    #return
+    return
     
     %x{
       cat #{REDIS_TEST_PID} | xargs kill -9
