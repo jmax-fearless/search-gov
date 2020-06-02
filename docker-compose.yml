@@ -5,7 +5,8 @@ services:
   web:
     build: .
     depends_on:
-      - elasticsearch
+      - elasticsearch6
+      - elasticsearch7
       - mysql
     command: bin/rails server --binding 0.0.0.0
     ports:
@@ -15,37 +16,57 @@ services:
       - gem_cache:/gems
     environment:
       - DB_HOST=mysql
-      - ES_HOST=elasticsearch:9200
+      - ES_6_HOST=elasticsearch6:9200
+      - ES_7_HOST=elasticsearch7:9200
       - REDIS_HOST=redis
 
 
   # TODO: COPY SECRETS
+  # TODO: update ports in readme
 
-  elasticsearch:
+  elasticsearch6:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.8.9
     environment:
       - bootstrap.memory_lock=true
       - discovery.type=single-node
       - xpack.license.self_generated.type=trial
       - xpack.security.enabled=false
-      - 'ES_JAVA_OPTS=-Xms750m -Xmx750m'
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+      #- 'ES_JAVA_OPTS=-Xms750m -Xmx750m'
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
-      - es_data:/usr/share/elasticsearch/data
+      - es_6_data:/usr/share/elasticsearch6/data
     ports:
-      - 9200:9200
+      - 9268:9200
 
-  kibana:
+  elasticsearch7:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    environment:
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - xpack.license.self_generated.type=trial
+      - xpack.security.enabled=false
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es_7_data:/usr/share/elasticsearch7/data
+    ports:
+      - 9277:9200
+# TODO: add kibana 7 as an optional service
+  kibana6:
     image: docker.elastic.co/kibana/kibana:6.8.9
     depends_on:
-      - elasticsearch
+      - elasticsearch6
     ports:
-      - 5601:5601
+      - 5668:5601
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch6:9200
 
   mysql:
     image: mysql:5.6
@@ -64,6 +85,7 @@ services:
       - 6379:6379
 
 volumes:
-  es_data:
   db_data:
+  es_6_data:
+  es_7_data:
   gem_cache:
