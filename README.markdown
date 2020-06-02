@@ -26,7 +26,7 @@ For Rails 5, we use bundler; you should be able to get all the rest of the gems 
     
 ### Services
 The required services listed below can be configured and run using [Docker](https://www.docker.com/get-started).
-You can run them all with `docker-compose up`. Alternatively, you can run them individually, i.e. `docker-compose up elasticsearch`. If you prefer to install and run the services without Docker, see the [wiki](https://github.com/GSA/search-gov/wiki/Local-Installation-and-Management-of-dependencies).
+You can run them all with `docker-compose up`. Alternatively, you can run them individually, i.e. `docker-compose up elasticsearch`.  We recommend setting the max memory alloted to Docker to 4GB (in Docker Desktop, Preferences > Resources > Advanced). (If you prefer to install and run the services without Docker, see the [wiki](https://github.com/GSA/search-gov/wiki/Local-Installation-and-Management-of-dependencies).)
 
 * [Elasticsearch](https://www.elastic.co/elasticsearch/) 6.8
 
@@ -52,6 +52,14 @@ The packages below are included in the custom Docker image used for building the
 [protocol buffers](https://developers.google.com/protocol-buffers/) package, also required by the cld gem
 * Java 
 
+$ docker-compose ps
+           Name                         Command               State                Ports
+------------------------------------------------------------------------------------------------------
+search-gov_elasticsearch_1   /usr/local/bin/docker-entr ...   Up      0.0.0.0:9200->9200/tcp, 9300/tcp
+search-gov_kibana_1          /usr/local/bin/kibana-docker     Up      0.0.0.0:5601->5601/tcp
+search-gov_mysql_1           docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp
+search-gov_redis_1           docker-entrypoint.sh redis ...   Up      0.0.0.0:6379->6379/tcp
+search-gov_web_1             bin/rails server --binding ...   Up      0.0.0.0:3000->3000/tcp
 
 --------------------------------------------------
 ### Packages
@@ -86,8 +94,7 @@ Anything listed in the `secret_keys` entry of that file will automatically be ma
 Create and setup your development and test databases. The database.yml file assumes you have a local database server up and running (MySQL 5.6.x), accessible from user 'root' with no password.
 
     $ docker-compose run --rm web bin/rails db:setup
-    $ rake db:test:prepare
-
+    $ docker-compose run --rm web bin/rails db:test:prepare
 
 ## Asset pipeline
 
