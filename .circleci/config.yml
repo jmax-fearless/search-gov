@@ -44,7 +44,7 @@ executors:
           bootstrap.memory_lock: true
           cluster.name: es77
           discovery.type: single-node
-          http.port: 9268
+          http.port: 9277
           xpack.license.self_generated.type: trial
           xpack.monitoring.enabled: false
           xpack.security.enabled: false
