@@ -47,10 +47,9 @@ To check settings and directory locations:
 ### Packages
 The packages below are included in the custom Docker image used for building the search-gov app container.
 
-* gcc - C++ compiler, required by the [cld3](https://github.com/akihikodaki/cld3-ruby) gem, which we use for language detection
-* protobuf - Google's
-[protocol buffers](https://developers.google.com/protocol-buffers/) package, also required by the cld gem
-* Java 
+* C++ compiler, required by the [cld3](https://github.com/akihikodaki/cld3-ruby) gem, which we use for language detection
+* Google's [protocol buffers](https://developers.google.com/protocol-buffers/), also required by the cld gem
+* [Java Runtime Environment](https://www.java.com/en/download/)
 
 $ docker-compose ps
            Name                         Command               State                Ports
