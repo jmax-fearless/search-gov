@@ -6,7 +6,10 @@ module TestServices
   REDIS_PIDS_PATH = "#{Rails.root}/tmp/pids".freeze
   TEST_DUMP_RDB = 'dump.rdb'.freeze
 
+  # TODO: ?
   def start_redis
+    #return
+
     Dir.mkdir(REDIS_CACHE_PATH) unless File.directory?(REDIS_CACHE_PATH)
     Dir.mkdir(REDIS_PIDS_PATH) unless File.directory?(REDIS_PIDS_PATH)
     redis_options = {
@@ -27,6 +30,8 @@ module TestServices
   end
 
   def stop_redis
+    #return
+    
     %x{
       cat #{REDIS_TEST_PID} | xargs kill -9
       rm -f #{REDIS_CACHE_PATH}/#{TEST_DUMP_RDB}
