@@ -9,13 +9,12 @@
 
 ### Docker
 
-The search-gov app and its required services (Redis, MySQL, etc.) can all be installed and run using [Docker](https://www.docker.com/get-started). If you prefer to install the services and packages without Docker, see the [wiki](https://github.com/GSA/search-gov/wiki/Local-Installation-and-Management-of-dependencies).
+The search-gov app and its required services (Redis, MySQL, etc.) can all be installed and run using [Docker](https://www.docker.com/get-started). If you prefer to install the services and packages without Docker, see the [wiki](https://github.com/GSA/search-gov/wiki/Local-Installation-and-Management-of-dependencies). We recommend setting the max memory alloted to Docker to 4GB (in Docker Desktop, Preferences > Resources > Advanced).
     
 ### Services
-The required services listed below can be configured and run using [Docker](https://www.docker.com/get-started).
-You can run them all, including the search-gov app, with `docker-compose up`. Alternatively, you can run them individually, i.e. `docker-compose up elasticsearch`.  We recommend setting the max memory alloted to Docker to 4GB (in Docker Desktop, Preferences > Resources > Advanced).
+The required services listed below can be configured and run using Docker. You can run them all, including the search-gov app, with `docker-compose up`. Alternatively, you can run them individually, i.e. `docker-compose up elasticsearch`.  
 
-* [Elasticsearch](https://www.elastic.co/elasticsearch/) 6.8 - for fulltext search and query analytics
+* [Elasticsearch](https://www.elastic.co/elasticsearch/) 6.8 - for full-text search and query analytics
 
 We have configured Elasticsearch 6.8 to run on port 9268, and Elasticsearch 7.7 to run on 9277. (Currently, only 6.8 is used in production, but some tests run against both versions.) To check Elasticsearch settings and directory locations:
 
@@ -56,8 +55,8 @@ Anything listed in the `secret_keys` entry of that file will automatically be ma
 
 Create and setup your development and test databases. The database.yml file assumes you have a local database server up and running (MySQL 5.6.x), accessible from user 'root' with no password.
 
-    $ docker-compose run --rm web bin/rails db:setup
-    $ docker-compose run --rm web bin/rails db:test:prepare
+    $ docker-compose run --rm app bin/rails db:setup
+    $ docker-compose run --rm app bin/rails db:test:prepare
 
 ## Asset pipeline
 
@@ -105,13 +104,13 @@ Make sure the unit tests, functional and integration tests run:
     $ docker-compose up
     
     # Run all the specs
-    $ docker-compose exec web bin/rake
+    $ docker-compose exec app bin/rake
     
     # Run just the RSpec tests
-    $ docker-compose exec web bin/rspec spec
+    $ docker-compose exec app bin/rspec spec
     
     # Run just the Cucumber integration tests
-    $ docker-compose exec web bundle exec cucumber features/
+    $ docker-compose exec app bundle exec cucumber features/
 
 ## Circle CI
 
