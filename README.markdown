@@ -7,39 +7,21 @@
 
 ## Dependencies
 
-### Ruby
+### Docker
 
-You will need the version of Ruby specified in `.ruby-version`. Verify that your path points to the correct version of Ruby:
-
-    $ ruby -v
-
-You should see output similar to the following:
-
-    ruby 2.5.5p157 (2019-03-15 revision 67260) [x86_64-darwin18]
-    
-### Gems
-
-For Rails 5, we use bundler; you should be able to get all the rest of the gems needed for this project like this:
-
-    gem install bundler
-    bundle install
+The search-gov app and its required services (Redis, MySQL, etc.) can all be installed and run using [Docker](https://www.docker.com/get-started). If you prefer to install the services and packages without Docker, see the [wiki](https://github.com/GSA/search-gov/wiki/Local-Installation-and-Management-of-dependencies).
     
 ### Services
 The required services listed below can be configured and run using [Docker](https://www.docker.com/get-started).
-You can run them all with `docker-compose up`. Alternatively, you can run them individually, i.e. `docker-compose up elasticsearch`.  We recommend setting the max memory alloted to Docker to 4GB (in Docker Desktop, Preferences > Resources > Advanced). (If you prefer to install and run the services without Docker, see the [wiki](https://github.com/GSA/search-gov/wiki/Local-Installation-and-Management-of-dependencies).)
+You can run them all, including the search-gov app, with `docker-compose up`. Alternatively, you can run them individually, i.e. `docker-compose up elasticsearch`.  We recommend setting the max memory alloted to Docker to 4GB (in Docker Desktop, Preferences > Resources > Advanced).
 
-* [Elasticsearch](https://www.elastic.co/elasticsearch/) 6.8
+* [Elasticsearch](https://www.elastic.co/elasticsearch/) 6.8 - for fulltext search and query analytics
 
-We're using [Elasticsearch](http://www.elasticsearch.org/) 6.8 for fulltext search and query analytics.
+We have configured Elasticsearch 6.8 to run on port 9268, and Elasticsearch 7.7 to run on 9277. (Currently, only 6.8 is used in production, but some tests run against both versions.) To check Elasticsearch settings and directory locations:
 
-To check settings and directory locations:
-
-<!--TODO: UPDATE PORT--> 
-<!--TODO: INSTALL ES 7?--> 
-
-    $ curl "localhost:9200/_nodes/settings?pretty=true"
+    $ curl "localhost:9268/_nodes/settings?pretty=true"
     
-* [Kibana](https://www.elastic.co/kibana) - Kibana is not required, but can be very useful for debugging Elasticsearch. Confirm Kibana is available in your browser at http://localhost:5601.
+* [Kibana](https://www.elastic.co/kibana) - Kibana is not required, but can be very useful for debugging Elasticsearch. Confirm Kibana is available for the Elasticsearch 6.8 cluster by visiting <http://localhost:5668>.
 
 * [MySQL](https://dev.mysql.com/doc/refman/5.6/en/) 5.6 - database
 * [Redis](https://redis.io/) 5.0 - We're using the Redis key-value store for caching, queue workflow via Resque, and some analytics.
@@ -51,8 +33,6 @@ The packages below are included in the custom Docker image used for building the
 * Google's [protocol buffers](https://developers.google.com/protocol-buffers/) - also required by the cld gem
 * [Java Runtime Environment](https://www.java.com/en/download/)
 * [PhantomJS](http://phantomjs.org/download.html) - required to run JavaScript in Cucumber features
-
---------------------------------------------------
 
 
 ## Service credentials; how we protect secrets
@@ -85,14 +65,11 @@ A few tips when working with asset pipeline:
 
 * Ensure that your asset directory is in the asset paths by running the following in the console:
 
-        y Rails.application.assets.paths
+        Rails.application.assets.paths
 
 * Find out which file is served for a given asset path by running the following in the console:
 
         Rails.application.assets['relative_path/to_asset.ext']
-
-    
-
      
 ### Indexes
 
@@ -124,7 +101,17 @@ Same thing, but using Resque to index in parallel:
 
 Make sure the unit tests, functional and integration tests run:
 
-    rake
+    # Run all the services in Docker containers
+    $ docker-compose up
+    
+    # Run all the specs
+    $ docker-compose exec web bin/rake
+    
+    # Run just the RSpec tests
+    $ docker-compose exec web bin/rspec spec
+    
+    # Run just the Cucumber integration tests
+    $ docker-compose exec web bundle exec cucumber features/
 
 ## Circle CI
 
@@ -132,13 +119,7 @@ We use [CircleCI](https://circleci.com/gh/GSA/usasearch) for continuous integrat
 
 # Code Coverage
 
-We track test coverage of the codebase over time, to help identify areas where we could write better tests and to see when poorly tested code got introduced.
-
-To show the coverage on the existing codebase, do this if you have not:
-
-    rake
-
-Then to view the report, open `coverage/index.html` in your favorite browser.
+We track test coverage of the codebase over time, to help identify areas where we could write better tests and to see when poorly tested code got introduced. After running the tests, open `coverage/index.html` in your favorite browser to view the report.
 
 You can click around on the files that have < 100% coverage to see what lines weren't exercised.
 
@@ -148,23 +129,14 @@ Make sure you commit any changes to the coverage directory back to git.
 
 Fire up a server and try it all out:
 
-    rails server
-or
-
-    rails s
+    $ docker-compose up
+    
+Visit <http://127.0.0.1:3000>
 
 # Main areas of functionality
 
 ## Search
-
-<http://127.0.0.1:3000>
-
-You should be able to type in 'taxes' and get search results.
-
-If you are interested in helath related data, you can also load MedLinePlus data
-from the XML retrieved from the MedLine website (see doc/medline for more details).
-
-    rake usasearch:medline:load
+<!--TODO-->
 
 ## Creating a new local admin account
 [Login.gov](https://login.gov) is used for authentication.
