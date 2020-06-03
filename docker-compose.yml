@@ -94,6 +94,24 @@ services:
     ports:
       - '5678:5678'
 
+  resque-workers:
+    command: 'bundle exec rake environment resque:work'
+    build: .
+    depends_on:
+      - elasticsearch6
+      - elasticsearch7
+      - mysql
+      - redis
+    volumes:
+      - .:/usr/src/app
+      - gem_cache:/gems
+    environment:
+      - DB_HOST=mysql
+      - ES_A_HOST=http://elasticsearch6:9200
+      - ES_B_HOST=http://elasticsearch7:9200
+      - REDIS_HOST=redis
+      - QUEUE=*
+
 volumes:
   db_data:
   es_6_data:
