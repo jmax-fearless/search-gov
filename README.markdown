@@ -136,7 +136,8 @@ Visit <http://127.0.0.1:3000>
 # Main areas of functionality
 
 ## Search
-<!--TODO-->
+
+TODO
 
 ## Creating a new local admin account
 [Login.gov](https://login.gov) is used for authentication.
