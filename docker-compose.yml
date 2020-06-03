@@ -32,7 +32,6 @@ services:
       - xpack.license.self_generated.type=trial
       - xpack.security.enabled=false
       - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
-      #- 'ES_JAVA_OPTS=-Xms750m -Xmx750m'
     ulimits:
       memlock:
         soft: -1
@@ -58,7 +57,7 @@ services:
       - es_7_data:/usr/share/elasticsearch7/data
     ports:
       - 9277:9200
-# TODO: add kibana 7 as an optional service
+
   kibana6:
     image: docker.elastic.co/kibana/kibana:6.8.9
     depends_on:
@@ -97,16 +96,11 @@ services:
     build: .
     depends_on:
       - elasticsearch6
-      - elasticsearch7
       - mysql
       - redis
-    volumes:
-      - .:/usr/src/app
-      - gem_cache:/gems
     environment:
       - DB_HOST=mysql
       - ES_A_HOST=http://elasticsearch6:9200
-      - ES_B_HOST=http://elasticsearch7:9200
       - REDIS_HOST=redis
       - QUEUE=*
 
