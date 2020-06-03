@@ -84,6 +84,16 @@ services:
     ports:
       - 6379:6379
 
+  resque-web:
+    command: 'bundle exec resque-web ./lib/setup_resque.rb -F -r redis:6379'
+    build: .
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - redis
+    ports:
+      - '5678:5678'
+
 volumes:
   db_data:
   es_6_data:
