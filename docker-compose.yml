@@ -103,6 +103,21 @@ services:
       - ES_A_HOST=http://elasticsearch6:9200
       - REDIS_HOST=redis
       - QUEUE=*
+      - VERBOSE=true
+
+  resque-scheduler:
+    command: 'bundle exec rake resque:scheduler'
+    build: .
+    depends_on:
+      - elasticsearch6
+      - mysql
+      - redis
+    environment:
+      - DB_HOST=mysql
+      - ES_A_HOST=http://elasticsearch6:9200
+      - REDIS_HOST=redis
+      - QUEUE=*
+      - VERBOSE=true
 
 volumes:
   db_data:
