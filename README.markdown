@@ -26,7 +26,7 @@ We have configured Elasticsearch 6.8 to run on port 9268, and Elasticsearch 7.7 
 * [Redis](https://redis.io/) 5.0 - We're using the Redis key-value store for caching, queue workflow via Resque, and some analytics.
 
 ### Packages
-The packages below are included in the custom Docker image used for building the search-gov app container.
+The packages below are included in the custom Docker image used for building the search-gov `app` container.
 
 * C++ compiler - required by the [cld3](https://github.com/akihikodaki/cld3-ruby) gem, which we use for language detection
 * Google's [protocol buffers](https://developers.google.com/protocol-buffers/) - also required by the cld gem
@@ -38,13 +38,9 @@ The packages below are included in the custom Docker image used for building the
 
 The app does its best to avoid interacting with most remote services during the test phase through heavy use of the [VCR](https://github.com/vcr/vcr) gem.
 
-You should be able to simply run this command:
+You should be able to simply run this command to get a valid `secrets.yml` file that will work for running existing specs:
 
-```
-cp config/secrets.yml.dev config/secrets.yml
-```
-
-To get a valid `secrets.yml` file that will work for running existing specs.
+    $ cp config/secrets.yml.dev config/secrets.yml
 
 If you find that you need to run specs that interact with a remote service, you'll need to put valid credentials into your `secrets.yml` file.
 
@@ -53,7 +49,7 @@ Anything listed in the `secret_keys` entry of that file will automatically be ma
 ## Database
 
 
-Create and setup your development and test databases. The database.yml file assumes you have a local database server up and running (MySQL 5.6.x), accessible from user 'root' with no password.
+Create and set up your development and test databases. The database.yml file assumes you have a local database server up and running (MySQL 5.6.x), accessible from user 'root' with no password.
 
     $ docker-compose run --rm app bin/rails db:setup
     $ docker-compose run --rm app bin/rails db:test:prepare
@@ -64,43 +60,43 @@ A few tips when working with asset pipeline:
 
 * Ensure that your asset directory is in the asset paths by running the following in the console:
 
-        Rails.application.assets.paths
+    > Rails.application.assets.paths
 
 * Find out which file is served for a given asset path by running the following in the console:
 
-        Rails.application.assets['relative_path/to_asset.ext']
+    > Rails.application.assets['relative_path/to_asset.ext']
      
 ### Indexes
 
 You can create the USASearch-related indexes like this:
 
-    rake usasearch:elasticsearch:create_indexes
+    $ docker-compose run --rm app rake usasearch:elasticsearch:create_indexes
 
 You can index all the records from ActiveRecord-backed indexes like this:
 
-    rake usasearch:elasticsearch:index_all[FeaturedCollection+BoostedContent]
+    $ docker-compose run --rm app rake usasearch:elasticsearch:index_all[FeaturedCollection+BoostedContent]
 
 If you want it to run in parallel using Resque workers, call it like this:
 
-    rake usasearch:elasticsearch:resque_index_all[FeaturedCollection+BoostedContent]
+    $ docker-compose run --rm app rake usasearch:elasticsearch:resque_index_all[FeaturedCollection+BoostedContent]
 
 Note that indexing everything uses whatever index/mapping/setting is in place. If you need to change the Elasticsearch schema first, do this:
 
-    rake usasearch:elasticsearch:recreate_index[FeaturedCollection]
+    $ docker-compose run --rm app rake usasearch:elasticsearch:recreate_index[FeaturedCollection]
 
 If you are changing a schema and want to migrate the index without having it be unavailable, do this:
 
-    rake usasearch:elasticsearch:migrate[FeaturedCollection]
+    $ docker-compose run --rm app rake usasearch:elasticsearch:migrate[FeaturedCollection]
 
 Same thing, but using Resque to index in parallel:
 
-    rake usasearch:elasticsearch:resque_migrate[FeaturedCollection]
+    $ docker-compose run --rm app rake usasearch:elasticsearch:resque_migrate[FeaturedCollection]
 
 # Tests
 
 Make sure the unit tests, functional and integration tests run:
 
-    # Run all the services in Docker containers
+    # Spin up all the services in Docker containers
     $ docker-compose up
     
     # Run all the specs
@@ -136,7 +132,7 @@ Visit <http://127.0.0.1:3000>
 
 ## Search
 
-TODO
+To run test searches, you will need a working Bing API key. You can request one from Bing, or ask a friendly coworker. Add the key to `config/secrets.yml`
 
 ## Creating a new local admin account
 [Login.gov](https://login.gov) is used for authentication.
@@ -157,6 +153,8 @@ Open the rails console, add a new user with the matching email.
 ```
 u = User.where(email: 'your-real-name+search-local@gsa.gov').first_or_initialize
 u.assign_attributes( contact_name: 'admin',
+                     first_name: 'search',
+                     last_name: 'admin',
                      default_affiliate: Affiliate.find_by_name('usagov'),
                      is_affiliate: true,
                      organization_name: 'GSA',
@@ -175,28 +173,17 @@ Your user account should have admin priveleges set. Now go here and poke around.
 <http://127.0.0.1:3000/admin>
 
 ## Asynchronous tasks
-Several long-running tasks have been moved to the background for processing via Resque. Here is how to see this in
-action on your local machine, assuming you have installed the Redis server.
+Several long-running tasks have been moved to the background for processing via Resque. Resque workers and the resque-web interface can be run automatically via `docker-compose up`. 
 
-1. Run the redis-server
+1. Visit the resque-web sinatra app at <http://0.0.0.0:5678/overview> to inspect queues, workers, etc.
 
-    % redis-server
+1. In your admin center, [create a type-ahead suggestion (SAYT)](http://localhost:3000/admin/sayt_suggestions) "delete me". Now [create a SAYT filter](http://localhost:3000/admin/sayt_filters) on the word "delete".
 
-1. Launch the Sinatra app to see the queues and jobs
+1. You should see log lines indicating that a Resque worker has processed a `ApplySaytFilters` job:
 
-    % resque-web ./lib/setup_resque.rb
+`resque-workers_1  | *** Running before_fork hooks with [(Job{primary_low} | ApplySaytFilters | [])]`
 
-1. In your admin center, create a SAYT suggestion "delete me". Now create a SAYT filter on the word "delete":
-
-    <http://localhost:3000/admin/>
-
-1. Look in the Resque web queue to see the job enqueued.
-
-1. Start a Resque worker to run the job:
-
-    % QUEUE=* rake environment resque:work
-
-At this point, you should see the queue empty in Resque web, and the suggestion "delete me" should be gone from the sayt_suggestions table.
+At this point, you should see the queue empty in Resque web, and the suggestion "delete me" should be gone from the [sayt_suggestions table](http://localhost:3000/admin/sayt_suggestions).
 
 ### Queue names & priorities
 Each Resque job runs in the context of a queue named 'primary' with priorities assigned at job creation time using the resque-priority Gem.
@@ -210,15 +197,9 @@ We use the [resque-scheduler](https://github.com/resque/resque-scheduler) gem to
 
 Example:
 
-1. Schedule a delayed job:
+1. Schedule a delayed job: `SitemapMonitorJob.set(wait: 5.minutes).perform_later`
 
-`MyJob.set(wait: 30.seconds).perform_later(args)`
-
-2. Run the resque-scheduler rake task:
-
-`rake resque:scheduler`
-
-3. Check the 'Scheduled' tab in Resque web (see above) to see your job.
+3. Check the 'Delayed' tab in [Resque web](http://0.0.0.0:5678/delayed) to see your job.
 
 # Performance
 We use New Relic to monitor our site performance, especially on search requests. If you are doing something around search, make
