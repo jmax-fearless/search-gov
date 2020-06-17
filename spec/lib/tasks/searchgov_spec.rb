@@ -14,6 +14,8 @@ describe 'Search.gov tasks' do
   after { $stdout = STDOUT }
 
   describe 'searchgov:bulk_index' do
+    before { skip "These specs appear to depend on live web sites. Review with Martha." }
+
     let(:file_path) { File.join(Rails.root.to_s, "spec", "fixtures", "csv", "searchgov_urls.csv") }
     let(:task_name) { 'searchgov:bulk_index' }
     let(:url) { 'https://www.consumerfinance.gov/consumer-tools/auto-loans/' }
@@ -42,6 +44,8 @@ describe 'Search.gov tasks' do
   end
 
   describe 'searchgov:promote' do
+    before { skip "These specs appear to depend on live web sites. Review with Martha." }
+
     let(:file_path) { File.join(Rails.root.to_s, "spec", "fixtures", "csv", "searchgov_urls.csv") }
     let(:task_name) { 'searchgov:promote' }
     let(:url) { 'https://www.consumerfinance.gov/consumer-tools/auto-loans/' }
