@@ -13,34 +13,15 @@ class UserSessionsController < ApplicationController
     login_dot_gov_logout_endpoint= '/openid_connect/logout'
     login_dot_gov_logout_url= "#{login_dot_gov_host}#{login_dot_gov_logout_endpoint}"
 
-    # login_dot_gov_logout_url= 'https://idp.int.identitysandbox.gov/openid_connect/logout'
-    # response= Faraday.get(
-    #   login_dot_gov_logout_url,
-    #   id_token_hint: id_token,
-    #   post_logout_redirect_uri: 'http://localhost:3000/auth/logindotgov/callback',
-    #   state: '1234567890123456789012'
-    # )
-    puts "id_token: #{id_token}"
-
-    connection= Faraday.new(login_dot_gov_logout_url) do |faraday|
-      faraday.request :url_encoded
-      faraday.response :logger
-      faraday.adapter Faraday.default_adapter
-    end
-
-    response= connection.get do |request|
-      request.params['id_token_hint']=  id_token
-      request.params['post_logout_redirect_uri']= 'http://localhost:3000/auth/logindotgov/callback'
-      request.params['state']= '1234567890123456789012'
-    end
-
-    # DEBUG
-    puts "response status: #{response.status}"
-    puts "response body: #{response.body}"
-
+    redirect_uri= URI::HTTPS.build(host: 'idp.int.identitysandbox.gov',
+                                   path: '/openid_connect/logout',
+                                   query: {
+                                     id_token_hint: id_token,
+                                     post_logout_redirect_uri: 'http://localhost:3000/login',
+                                     state: '1234567890123456789012'
+                                   }.to_query).to_s
     reset_session
     current_user_session.destroy
-    redirect_to(login_path)
-    # redirect_to('http://localhost:3000/auth/logindotgov/callback')
+    redirect_to(redirect_uri)
   end
 end
