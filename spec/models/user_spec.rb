@@ -490,4 +490,53 @@ describe User do
       end
     end
   end
+
+  describe "#login_allowed?" do
+    let(:email) { 'dont_care@test.com' }
+    let(:approval_status) { 'invalid_status' }
+    let(:persist_user) { false }
+
+    let(:a_user) do
+      user= User.new(
+        email: email,
+        approval_status: approval_status
+      )
+      if persist_user
+        # Double save to be sure approval_status is as specified,
+        # because User#set_default_flags and User#set_initial_approval
+        # have their own opinions on the subject for new users.
+        user.save!
+        user.approval_status= approval_status
+        user.save!
+      end
+      user
+    end
+
+    describe "when the user has been approved but not persisted" do
+      let(:approval_status) { 'approved' }
+      let(:persist_user) { false }
+
+      it "is false" do
+        expect(a_user.login_allowed?).to be(false)
+      end
+    end
+
+    describe "when the user has been persisted but not approved" do
+      let(:approval_status) { 'not_approved' }
+      let(:persist_user) { true }
+
+      it "is false" do
+        expect(a_user.login_allowed?).to be(false)
+      end
+    end
+
+    describe "when the user has been persisted and approved" do
+      let(:approval_status) { 'approved' }
+      let(:persist_user) { true }
+
+      it "is true" do
+        expect(a_user.login_allowed?).to be(true)
+      end
+    end
+  end
 end
