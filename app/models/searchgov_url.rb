@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SearchgovUrl < ApplicationRecord
   include Fetchable
   include RobotsTaggable
