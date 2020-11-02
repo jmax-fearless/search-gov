@@ -14,12 +14,6 @@ Feature: Admin Interface
     And I should see "Successfully uploaded file \"bulk_upload_urls.txt\"."
     And there should be a bulk upload job
 
-    When I attach the file "features/support/does_not_exist.txt" to "bulk_upload_urls"
-    And I press "Upload"
-    Then I should be on the bulk url upload admin page
-    And I should see "Could not find file \"does_not_exist.txt\"."
-    And there should not be a bulk upload job
-
     When I do not attach a file to "bulk_upload_urls"
     And I press "Upload"
     Then I should be on the bulk url upload admin page
