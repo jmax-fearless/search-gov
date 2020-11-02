@@ -11,25 +11,13 @@ Feature: Admin Interface
     When I attach the file "features/support/bulk_upload_urls.txt" to "bulk_upload_urls"
     And I press "Upload"
     Then I should be on the bulk url upload admin page
-    And I should see "Successfully uploaded 5 urls."
+    And I should see "Successfully uploaded file \"bulk_upload_urls.txt\"."
     And there should be a bulk upload job
 
-    When I attach the file "features/support/too_many_urls.txt" to "bulk_upload_urls"
+    When I attach the file "features/support/does_not_exist.txt" to "bulk_upload_urls"
     And I press "Upload"
     Then I should be on the bulk url upload admin page
-    And I should see "Too many urls. Please upload no more than 15000 at once."
-    And there should not be a bulk upload job
-
-    When I attach the file "features/support/no_urls.txt" to "bulk_upload_urls"
-    And I press "Upload"
-    Then I should be on the bulk url upload admin page
-    And I should see "No urls uploaded; please check your file and try again."
-    And there should not be a bulk upload job
-
-    When I attach the file "features/support/invalid_bulk_url_upload_file.doc" to "bulk_upload_urls"
-    And I press "Upload"
-    Then I should be on the bulk url upload admin page
-    And I should see "Invalid file format"
+    And I should see "Could not find file \"does_not_exist.txt\"."
     And there should not be a bulk upload job
 
     When I do not attach a file to "bulk_upload_urls"
