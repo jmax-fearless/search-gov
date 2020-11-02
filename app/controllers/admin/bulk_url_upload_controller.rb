@@ -7,8 +7,9 @@ class Admin::BulkUrlUploadController < Admin::AdminController
 
   def upload
     begin
-      number_of_urls= BulkUrlUploader.new(params[:bulk_upload_urls]).add_urls
-      flash[:success]= "Successfully uploaded #{number_of_urls} urls."
+      filename= params[:bulk_upload_urls]
+      number_of_urls= BulkUrlUploader.new(filename).add_urls
+      flash[:success]= "Successfully uploaded file \"#{filename}\" urls."
     rescue StandardError => error
       flash[:error]= error.message
     end
