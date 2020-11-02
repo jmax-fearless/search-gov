@@ -18,6 +18,8 @@ class BulkUrlUploader
     when 'invalid_bulk_url_upload_file.doc'
       raise 'Invalid file format'
     end
+
+    SearchgovUrlBulkUploaderJob.perform_later(@file)
   end
 
   def add_urls
