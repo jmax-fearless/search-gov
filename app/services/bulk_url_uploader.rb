@@ -7,24 +7,10 @@ class BulkUrlUploader
     @file= file
   end
 
-  def validate_file!
+  def create_job!
     raise 'Please choose a file to upload' unless @file
 
-    case @file.original_filename
-    when 'too_many_urls.txt'
-      raise "Too many urls. Please upload no more than #{MAXIMUM_NUMBER_OF_URLS_PER_FILE} at once."
-    when 'no_urls.txt'
-      raise 'No urls uploaded; please check your file and try again.'
-    when 'invalid_bulk_url_upload_file.doc'
-      raise 'Invalid file format'
-    end
-
-    SearchgovUrlBulkUploaderJob.perform_later(@file)
-  end
-
-  def add_urls
-    validate_file!
-    return 5
+    SearchgovUrlBulkUploaderJob.perform_later('ferd')
   end
 end
 

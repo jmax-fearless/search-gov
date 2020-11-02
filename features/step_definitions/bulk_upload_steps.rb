@@ -9,7 +9,10 @@ end
 
 Then /^there should be a bulk upload job$/ do
   the_adapter = ActiveJob::Base.queue_adapter
-  enqueued_jobs = the_adapter.enqueued_jobs
+  the_queue_entry = the_adapter.enqueued_jobs.first
+  the_adapter.enqueued_jobs.clear
 
-  expect(enqueued_jobs[0]).to be_a(SearchgovUrlBulkUploaderJob)
+  the_job = the_queue_entry[:job]
+
+  expect(the_job).to eq(SearchgovUrlBulkUploaderJob)
 end

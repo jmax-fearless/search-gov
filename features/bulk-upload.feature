@@ -11,7 +11,7 @@ Feature: Admin Interface
     When I attach the file "features/support/bulk_upload_urls.txt" to "bulk_upload_urls"
     And I press "Upload"
     Then I should be on the bulk url upload admin page
-    And I should see "Successfully uploaded file \"bulk_upload_urls.txt\"."
+    And I should see "Successfully uploaded bulk_upload_urls.txt"
     And there should be a bulk upload job
 
     When I do not attach a file to "bulk_upload_urls"
