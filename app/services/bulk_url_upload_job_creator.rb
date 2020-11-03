@@ -12,13 +12,20 @@ class BulkUrlUploadJobCreator
     "#{Dir.tmpdir}/bulk-url-upload-#{time_string}-#{pid_string}-#{base_filename}"
   end
 
+  # Rails doesn't guarantee that our TempFile, in @file, will live
+  # longer than our request. Since we need it to still be there when
+  # the ActiveJob kicks off, we create a new link to it. It is the
+  # ActiveJob's responsibility to delete the new link after it's done.
+  def save_tempfile
+    saved_file_name = unique_file_name
+    File.link(@file.tempfile.path, saved_file_name)
+    saved_file_name
+  end
+
   def create_job!
     raise 'Please choose a file to upload' unless @file
 
-    saved_file_name = unique_file_name
-    File.link(@file.tempfile.path, saved_file_name)
-
-    SearchgovUrlBulkUploaderJob.perform_later(saved_file_name)
+    SearchgovUrlBulkUploaderJob.perform_later(save_tempfile)
   end
 end
 
