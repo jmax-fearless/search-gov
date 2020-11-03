@@ -8,7 +8,7 @@ class Admin::BulkUrlUploadController < Admin::AdminController
   def upload
     begin
       file= params[:bulk_upload_urls]
-      BulkUrlUploader.new(file).create_job!
+      BulkUrlUploadJobCreator.new(file).create_job!
       flash[:success]= "Successfully uploaded #{file.original_filename}."
     rescue StandardError => error
       flash[:error]= error.message

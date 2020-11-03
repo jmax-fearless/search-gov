@@ -1,10 +1,24 @@
 # frozen_string_literal: true
 
-class BulkUrlUploader
-  MAXIMUM_NUMBER_OF_URLS_PER_FILE= 15000
-
+class BulkUrlUploadJobCreator
   def initialize(file)
-    @file= file
+    @file = file
+  end
+
+  def unique_file_name
+    time_string = Time.now.utc.strftime('%Y%m%d%H%M%S')
+    pid_string = Process.pid.to_s
+    base_filename = @file.original_filename
+    "#{Dir.tmpdir}/bulk-url-upload-#{time_string}-#{pid_string}-#{base_filename}"
+  end
+
+  def create_job!
+    raise 'Please choose a file to upload' unless @file
+
+    saved_file_name = unique_file_name
+    File.link(@file.tempfile.path, saved_file_name)
+
+    SearchgovUrlBulkUploaderJob.perform_later(saved_file_name)
   end
 end
 
