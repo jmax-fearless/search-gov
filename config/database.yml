@@ -12,6 +12,8 @@ default: &DEFAULT
   encoding: utf8mb4
   collation: utf8mb4_unicode_ci
   host: <%= ENV['DB_HOST'] || '127.0.0.1' %>
+  variables:
+    sql_mode: TRADITIONAL
 
 development:
   <<: *DEFAULT

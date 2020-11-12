@@ -2,16 +2,48 @@
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP TABLE IF EXISTS `active_storage_attachments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `active_storage_attachments` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `record_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `record_id` bigint(20) NOT NULL,
+  `blob_id` bigint(20) NOT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index_active_storage_attachments_uniqueness` (`record_type`,`record_id`,`name`,`blob_id`),
+  KEY `index_active_storage_attachments_on_blob_id` (`blob_id`),
+  CONSTRAINT `fk_rails_c3b3935057` FOREIGN KEY (`blob_id`) REFERENCES `active_storage_blobs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `active_storage_blobs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `active_storage_blobs` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `metadata` text COLLATE utf8mb4_unicode_ci,
+  `byte_size` bigint(20) NOT NULL,
+  `checksum` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index_active_storage_blobs_on_key` (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `affiliate_feature_additions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `affiliate_feature_additions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) NOT NULL,
@@ -23,7 +55,7 @@ CREATE TABLE `affiliate_feature_additions` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `affiliate_templates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `affiliate_templates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `created_at` datetime DEFAULT NULL,
@@ -40,7 +72,7 @@ CREATE TABLE `affiliate_templates` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `affiliate_twitter_settings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `affiliate_twitter_settings` (
   `affiliate_id` int(11) NOT NULL,
   `twitter_profile_id` int(11) NOT NULL,
@@ -55,7 +87,7 @@ CREATE TABLE `affiliate_twitter_settings` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `affiliates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `affiliates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -149,7 +181,7 @@ CREATE TABLE `affiliates` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `affiliates_instagram_profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `affiliates_instagram_profiles` (
   `affiliate_id` int(11) NOT NULL,
   `instagram_profile_id` bigint(20) NOT NULL,
@@ -158,7 +190,7 @@ CREATE TABLE `affiliates_instagram_profiles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `affiliates_youtube_profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `affiliates_youtube_profiles` (
   `affiliate_id` int(11) DEFAULT NULL,
   `youtube_profile_id` int(11) DEFAULT NULL,
@@ -168,7 +200,7 @@ CREATE TABLE `affiliates_youtube_profiles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `agencies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `agencies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -181,7 +213,7 @@ CREATE TABLE `agencies` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `agency_organization_codes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `agency_organization_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `agency_id` int(11) DEFAULT NULL,
@@ -194,7 +226,7 @@ CREATE TABLE `agency_organization_codes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `agency_queries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `agency_queries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `phrase` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -207,7 +239,7 @@ CREATE TABLE `agency_queries` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `alerts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `alerts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) DEFAULT NULL,
@@ -222,7 +254,7 @@ CREATE TABLE `alerts` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `ar_internal_metadata`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ar_internal_metadata` (
   `key` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -233,7 +265,7 @@ CREATE TABLE `ar_internal_metadata` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `boosted_content_keywords`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `boosted_content_keywords` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `boosted_content_id` int(11) NOT NULL,
@@ -246,7 +278,7 @@ CREATE TABLE `boosted_content_keywords` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `boosted_contents`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `boosted_contents` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) DEFAULT NULL,
@@ -265,7 +297,7 @@ CREATE TABLE `boosted_contents` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `catalog_prefixes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `catalog_prefixes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `prefix` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -276,7 +308,7 @@ CREATE TABLE `catalog_prefixes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `connections`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `connections` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) NOT NULL,
@@ -291,7 +323,7 @@ CREATE TABLE `connections` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `document_collections`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `document_collections` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) NOT NULL,
@@ -306,7 +338,7 @@ CREATE TABLE `document_collections` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `email_templates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `email_templates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -319,7 +351,7 @@ CREATE TABLE `email_templates` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `excluded_domains`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `excluded_domains` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `domain` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -332,7 +364,7 @@ CREATE TABLE `excluded_domains` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `excluded_urls`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `excluded_urls` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `url` mediumtext COLLATE utf8mb4_unicode_ci,
@@ -345,7 +377,7 @@ CREATE TABLE `excluded_urls` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `featured_collection_keywords`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `featured_collection_keywords` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `featured_collection_id` int(11) NOT NULL,
@@ -358,7 +390,7 @@ CREATE TABLE `featured_collection_keywords` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `featured_collection_links`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `featured_collection_links` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `featured_collection_id` int(11) NOT NULL,
@@ -373,7 +405,7 @@ CREATE TABLE `featured_collection_links` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `featured_collections`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `featured_collections` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) DEFAULT NULL,
@@ -400,7 +432,7 @@ CREATE TABLE `featured_collections` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `features`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `features` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `internal_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -413,7 +445,7 @@ CREATE TABLE `features` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `federal_register_agencies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `federal_register_agencies` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -428,7 +460,7 @@ CREATE TABLE `federal_register_agencies` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `federal_register_agencies_federal_register_documents`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `federal_register_agencies_federal_register_documents` (
   `federal_register_agency_id` int(11) NOT NULL,
   `federal_register_document_id` int(11) NOT NULL,
@@ -438,7 +470,7 @@ CREATE TABLE `federal_register_agencies_federal_register_documents` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `federal_register_documents`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `federal_register_documents` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `document_number` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -461,7 +493,7 @@ CREATE TABLE `federal_register_documents` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `flickr_profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `flickr_profiles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -476,7 +508,7 @@ CREATE TABLE `flickr_profiles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `help_links`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `help_links` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `request_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -489,7 +521,7 @@ CREATE TABLE `help_links` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `hints`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `hints` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -502,7 +534,7 @@ CREATE TABLE `hints` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `i14y_drawers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `i14y_drawers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `handle` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -515,7 +547,7 @@ CREATE TABLE `i14y_drawers` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `i14y_memberships`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `i14y_memberships` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) NOT NULL,
@@ -529,7 +561,7 @@ CREATE TABLE `i14y_memberships` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `image_search_labels`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `image_search_labels` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) NOT NULL,
@@ -542,7 +574,7 @@ CREATE TABLE `image_search_labels` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `indexed_documents`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `indexed_documents` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` mediumtext COLLATE utf8mb4_unicode_ci,
@@ -565,7 +597,7 @@ CREATE TABLE `indexed_documents` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `instagram_profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `instagram_profiles` (
   `id` bigint(20) NOT NULL,
   `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -576,7 +608,7 @@ CREATE TABLE `instagram_profiles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `languages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `languages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -594,7 +626,7 @@ CREATE TABLE `languages` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `med_related_topics`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `med_related_topics` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `med_topic_id` int(11) NOT NULL,
@@ -609,7 +641,7 @@ CREATE TABLE `med_related_topics` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `med_sites`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `med_sites` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `med_topic_id` int(11) NOT NULL,
@@ -623,7 +655,7 @@ CREATE TABLE `med_sites` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `med_synonyms`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `med_synonyms` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `medline_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -636,7 +668,7 @@ CREATE TABLE `med_synonyms` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `med_topics`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `med_topics` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `medline_tid` int(11) DEFAULT NULL,
@@ -653,7 +685,7 @@ CREATE TABLE `med_topics` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `memberships`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `memberships` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -668,7 +700,7 @@ CREATE TABLE `memberships` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `misspellings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `misspellings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `wrong` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -681,7 +713,7 @@ CREATE TABLE `misspellings` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `navigations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `navigations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) NOT NULL,
@@ -698,7 +730,7 @@ CREATE TABLE `navigations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `news_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `news_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `link` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -722,7 +754,7 @@ CREATE TABLE `news_items` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `outbound_rate_limits`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `outbound_rate_limits` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -736,7 +768,7 @@ CREATE TABLE `outbound_rate_limits` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `routed_queries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `routed_queries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) DEFAULT NULL,
@@ -750,7 +782,7 @@ CREATE TABLE `routed_queries` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `routed_query_keywords`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `routed_query_keywords` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `routed_query_id` int(11) DEFAULT NULL,
@@ -763,7 +795,7 @@ CREATE TABLE `routed_query_keywords` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `rss_feed_urls`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rss_feed_urls` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `rss_feed_owner_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -780,7 +812,7 @@ CREATE TABLE `rss_feed_urls` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `rss_feed_urls_rss_feeds`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rss_feed_urls_rss_feeds` (
   `rss_feed_url_id` int(11) NOT NULL,
   `rss_feed_id` int(11) NOT NULL,
@@ -790,7 +822,7 @@ CREATE TABLE `rss_feed_urls_rss_feeds` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `rss_feeds`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rss_feeds` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `owner_id` int(11) NOT NULL,
@@ -808,7 +840,7 @@ CREATE TABLE `rss_feeds` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `sayt_filters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sayt_filters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `phrase` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -823,7 +855,7 @@ CREATE TABLE `sayt_filters` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `sayt_suggestions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sayt_suggestions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `phrase` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -840,7 +872,7 @@ CREATE TABLE `sayt_suggestions` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `schema_migrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `schema_migrations` (
   `version` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   UNIQUE KEY `unique_schema_migrations` (`version`)
@@ -848,7 +880,7 @@ CREATE TABLE `schema_migrations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `search_modules`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `search_modules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -861,7 +893,7 @@ CREATE TABLE `search_modules` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `searchgov_domains`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `searchgov_domains` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `domain` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -882,7 +914,7 @@ CREATE TABLE `searchgov_domains` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `searchgov_urls`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `searchgov_urls` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
@@ -904,7 +936,7 @@ CREATE TABLE `searchgov_urls` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `site_domains`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `site_domains` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) NOT NULL,
@@ -918,7 +950,7 @@ CREATE TABLE `site_domains` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `site_feed_urls`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `site_feed_urls` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) NOT NULL,
@@ -934,7 +966,7 @@ CREATE TABLE `site_feed_urls` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `sitemaps`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sitemaps` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `searchgov_domain_id` int(11) DEFAULT NULL,
@@ -949,7 +981,7 @@ CREATE TABLE `sitemaps` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `suggestion_blocks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `suggestion_blocks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `query` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -961,7 +993,7 @@ CREATE TABLE `suggestion_blocks` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `superfresh_urls`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `superfresh_urls` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `url` mediumtext COLLATE utf8mb4_unicode_ci,
@@ -973,7 +1005,7 @@ CREATE TABLE `superfresh_urls` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `system_alerts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `system_alerts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `message` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -984,7 +1016,7 @@ CREATE TABLE `system_alerts` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `tag_filters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tag_filters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `affiliate_id` int(11) NOT NULL,
@@ -998,7 +1030,7 @@ CREATE TABLE `tag_filters` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `templates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `templates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1013,7 +1045,7 @@ CREATE TABLE `templates` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `top_searches`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `top_searches` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `query` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1029,7 +1061,7 @@ CREATE TABLE `top_searches` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `tweets`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tweets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tweet_id` bigint(20) unsigned NOT NULL,
@@ -1046,7 +1078,7 @@ CREATE TABLE `tweets` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `twitter_lists`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `twitter_lists` (
   `id` bigint(20) unsigned NOT NULL,
   `member_ids` longtext COLLATE utf8mb4_unicode_ci,
@@ -1059,7 +1091,7 @@ CREATE TABLE `twitter_lists` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `twitter_lists_twitter_profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `twitter_lists_twitter_profiles` (
   `twitter_list_id` bigint(20) unsigned NOT NULL,
   `twitter_profile_id` int(11) NOT NULL,
@@ -1069,7 +1101,7 @@ CREATE TABLE `twitter_lists_twitter_profiles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `twitter_profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `twitter_profiles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `twitter_id` bigint(20) unsigned NOT NULL,
@@ -1084,7 +1116,7 @@ CREATE TABLE `twitter_profiles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `url_prefixes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `url_prefixes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `document_collection_id` int(11) NOT NULL,
@@ -1097,7 +1129,7 @@ CREATE TABLE `url_prefixes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1131,7 +1163,7 @@ CREATE TABLE `users` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `watchers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `watchers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1150,7 +1182,7 @@ CREATE TABLE `watchers` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `whitelisted_v1_api_handles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `whitelisted_v1_api_handles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `handle` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1162,7 +1194,7 @@ CREATE TABLE `whitelisted_v1_api_handles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `youtube_playlists`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `youtube_playlists` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `youtube_profile_id` int(11) DEFAULT NULL,
@@ -1177,7 +1209,7 @@ CREATE TABLE `youtube_playlists` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `youtube_profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `youtube_profiles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1929,6 +1961,8 @@ INSERT INTO `schema_migrations` (version) VALUES
 ('20191113214448'),
 ('20200121220041'),
 ('20200212183209'),
-('20200728194854');
+('20200728194854'),
+('20201112180122'),
+('20201112182000');
 
 
