@@ -13,7 +13,7 @@ describe Admin::BulkUrlUploadController do
 
       let(:original_filename) { 'good_url_file.txt' }
       let(:uploaded_file) { fixture_file_upload("txt/#{original_filename}") }
-      let(:the_job_creator) { spy(BulkUrlUploadJobCreator.new(uploaded_file, user)) }
+      let(:the_job_creator) { instance_double(BulkUrlUploadJobCreator, create_job!: nil) }
 
       before do
         allow(BulkUrlUploadJobCreator).to receive(:new).
