@@ -7,6 +7,7 @@ Feature: Admin Interface
     Given I am logged in with email "affiliate_admin@fixtures.org"
     When I go to the bulk url upload admin page
     Then I should see "Bulk URL Upload"
+    And I should see "The maximum file size is 10Mb"
 
     When I attach the file "features/support/bulk_upload_urls.txt" to "bulk_upload_urls"
     And I press "Upload"
