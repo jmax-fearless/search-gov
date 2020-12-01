@@ -1,5 +1,5 @@
-Feature: Admin Interface
-  In order to give affiliates the ability to submit a file of URLs for indexing by Garfield
+Feature: Bulk Search.gov URL Upload
+  In order to give affiliates the ability to submit a file of URLs for indexing
   As an admin
   I want to upload a file containing URLs
 

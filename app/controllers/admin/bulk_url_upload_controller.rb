@@ -12,13 +12,20 @@ module Admin
         raise(BulkUrlUploader::Error, 'Please choose a file to upload.') if file.blank?
 
         BulkUrlUploadJobCreator.new(file, current_user).create_job!
-        message = "Successfully uploaded #{file.original_filename} for processing."
-        flash[:success] = message
+        flash[:success] = success_message(file.original_filename)
       rescue BulkUrlUploader::Error => e
         flash[:error] = e.message
       end
 
       redirect_to admin_bulk_url_upload_index_path
+    end
+
+    def success_message(filename)
+      <<~EOF
+        Successfully uploaded #{filename} for processing.
+        <br />
+        The results will be emailed to you.
+      EOF
     end
   end
 end

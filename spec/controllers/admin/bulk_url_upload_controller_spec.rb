@@ -56,7 +56,12 @@ describe Admin::BulkUrlUploadController do
 
         it 'shows the user a success message' do
           expect(the_controller.request.flash[:success]).
-            to eq("Successfully uploaded #{original_filename} for processing.")
+            to eq(<<~EOF
+              Successfully uploaded #{original_filename} for processing.
+              <br />
+              The results will be emailed to you.
+            EOF
+            )
         end
 
         it 'does not show the user an error message' do

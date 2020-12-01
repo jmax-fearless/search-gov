@@ -1,12 +1,9 @@
 require 'spec_helper'
 
 describe SearchgovUrl do
-  fixtures :searchgov_urls, :searchgov_domain
-
   let(:url) { 'http://www.agency.gov/boring.html' }
   let(:html) { read_fixture_file("/html/page_with_og_metadata.html") }
-  let(:agency_domain) { SearchgovDomain.find_by(domain: 'agency.gov') }
-  let(:valid_attributes) { { url: url, searchgov_domain: agency_domain } }
+  let(:valid_attributes) { { url: url } }
   let(:searchgov_url) { SearchgovUrl.new(valid_attributes) }
   let(:i14y_document) { I14yDocument.new }
 
@@ -104,7 +101,6 @@ describe SearchgovUrl do
 
   describe '#fetch' do
     let!(:searchgov_url) { SearchgovUrl.create!(valid_attributes) }
-
     let(:searchgov_domain) do
       instance_double(SearchgovDomain, check_status: '200 OK', :available? => true)
     end
@@ -445,12 +441,12 @@ describe SearchgovUrl do
       it 'fetches and indexes the document' do
         expect(I14yDocument).to receive(:create).
           with(hash_including(
-                 handle: 'searchgov',
-                 path: 'https://agency.gov/test.txt',
-                 title: 'test.txt',
-                 description: nil,
-                 content: 'This is my text content.',
-                 language: 'en'
+            handle: 'searchgov',
+            path: 'https://agency.gov/test.txt',
+            title: 'test.txt',
+            description: nil,
+            content: 'This is my text content.',
+            language: 'en'
         ))
         fetch
       end
