@@ -5,10 +5,8 @@ describe SearchgovUrlBulkUploaderJob do
 
   describe '#perform' do
     let(:user) { users(:affiliate_admin) }
-
     let(:redis) { Redis.new(host: REDIS_HOST, port: REDIS_PORT) }
     let(:redis_key) { 'bulk_url_upload:some-file.txt:a-guid' }
-
     let(:urls) do
       [
         'https://agency.gov/one-url',
@@ -26,7 +24,7 @@ describe SearchgovUrlBulkUploaderJob do
       ActionMailer::Base.perform_deliveries = saved_perform_delivery
     end
 
-    describe 'when there is a valid url list and a valid user' do
+    describe 'when there is a valid url list' do
       before do
         SearchgovDomain.create(domain: 'agency.gov')
         redis.set(redis_key, url_file_contents)

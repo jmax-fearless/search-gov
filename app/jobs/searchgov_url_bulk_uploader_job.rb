@@ -3,9 +3,9 @@
 class SearchgovUrlBulkUploaderJob < ApplicationJob
   queue_as :searchgov
 
-  def perform(user, url_file_redis_key)
+  def perform(user, urls_redis_key)
     @user = user
-    @url_file_redis_key = url_file_redis_key
+    @urls_redis_key = urls_redis_key
 
     uploader.upload_and_index
     report_results
@@ -30,20 +30,20 @@ class SearchgovUrlBulkUploaderJob < ApplicationJob
   end
 
   def uploader
-    @uploader ||= BulkUrlUploader.new(friendly_name, url_file)
+    @uploader ||= BulkUrlUploader.new(friendly_name, urls)
   end
 
-  def url_file
-    return @url_file if @url_file
+  def urls
+    return @urls if @urls
 
     redis = Redis.new(host: REDIS_HOST, port: REDIS_PORT)
-    raw_urls = redis.get(@url_file_redis_key)
-    redis.del(@url_file_redis_key)
+    raw_urls = redis.get(@urls_redis_key)
+    redis.del(@urls_redis_key)
 
-    @url_file = StringIO.new(raw_urls)
+    @urls = StringIO.new(raw_urls)
   end
 
   def friendly_name
-    @url_file_redis_key.split(':')[1]
+    @urls_redis_key.split(':')[1]
   end
 end

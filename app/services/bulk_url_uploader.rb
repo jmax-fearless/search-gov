@@ -2,7 +2,7 @@
 
 class BulkUrlUploader
   MAXIMUM_FILE_SIZE = 10.megabytes
-  VALID_CONTENT_TYPES = %w[text/plain txt].freeze
+  VALID_CONTENT_TYPES = %w[text/plain].freeze
 
   attr_reader :results
 
@@ -10,23 +10,23 @@ class BulkUrlUploader
   end
 
   class Results
-    attr_accessor :domains, :ok_count, :error_count, :name
+    attr_accessor :searchgov_domains, :ok_count, :error_count, :name
 
     def initialize(name)
       @name = name
       @ok_count = 0
       @error_count = 0
-      @domains = Set.new
+      @searchgov_domains = Set.new
       @errors = Hash.new { |hash, key| hash[key] = [] }
     end
 
     def add_ok(url)
-      @ok_count += 1
-      @domains << url.searchgov_domain
+      self.ok_count += 1
+      searchgov_domains << url.searchgov_domain
     end
 
     def add_error(error_message, url)
-      @error_count += 1
+      self.error_count += 1
       @errors[error_message] << url
     end
 
@@ -60,7 +60,7 @@ class BulkUrlUploader
   end
 
   def index_domains
-    @results.domains.each do |domain|
+    @results.searchgov_domains.each do |domain|
       Rails.logger.info "Starting indexing for #{domain.domain}"
       domain.index_urls
     end
@@ -71,7 +71,7 @@ class BulkUrlUploader
     begin
       url = SearchgovUrl.create!(url: raw_url)
       @results.add_ok(url)
-    rescue ActiveRecord::RecordInvalid => e
+    rescue StandardError => e
       @results.add_error(e.message, raw_url)
     end
   end

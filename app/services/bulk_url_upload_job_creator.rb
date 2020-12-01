@@ -7,8 +7,6 @@ class BulkUrlUploadJobCreator
   end
 
   def create_job!
-    raise 'Please choose a file to upload' unless @file
-
     SearchgovUrlBulkUploaderJob.perform_later(@user, save_tempfile)
   end
 

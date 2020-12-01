@@ -4,11 +4,9 @@ describe BulkUrlUploadJobCreator do
   describe '#create_job!' do
     include ActionDispatch::TestProcess::FixtureFile
 
-    let(:a_user) { users(:affiliate_admin) }
-
-    let(:job_creator) { described_class.new(uploaded_file, a_user) }
+    let(:user) { users(:affiliate_admin) }
+    let(:job_creator) { described_class.new(uploaded_file, user) }
     let(:job) { job_creator.create_job! }
-
     let(:file_name) { nil }
     let(:file_type) { 'text/plain' }
     let(:uploaded_file) { fixture_file_upload(file_name, file_type) }
@@ -19,7 +17,7 @@ describe BulkUrlUploadJobCreator do
       let(:file_name) { 'txt/good_url_file.txt' }
 
       it 'queues a job' do
-        expect { job }.to have_enqueued_job.with(a_user, job_creator.redis_key)
+        expect { job }.to have_enqueued_job.with(user, job_creator.redis_key)
       end
     end
 

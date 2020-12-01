@@ -7,12 +7,13 @@ Feature: Bulk Search.gov URL Upload
     Given I am logged in with email "affiliate_admin@fixtures.org"
     When I go to the bulk url upload admin page
     Then I should see "Bulk URL Upload"
-    And I should see "The maximum file size is 10Mb"
+    And I should see "The maximum file size is 10 MB"
 
     When I attach the file "features/support/bulk_upload_urls.txt" to "bulk_upload_urls"
     And I press "Upload"
     Then I should be on the bulk url upload admin page
     And I should see "Successfully uploaded bulk_upload_urls.txt"
+    And I should see "The results will be emailed to you."
     And there should be a bulk upload job
 
     When I do not attach a file to "bulk_upload_urls"
