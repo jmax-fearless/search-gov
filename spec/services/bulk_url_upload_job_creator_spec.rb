@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe BulkUrlUploadJobCreator do
+describe BulkUrlUploader::UploadJobCreator do
   describe '#create_job!' do
     include ActionDispatch::TestProcess::FixtureFile
 

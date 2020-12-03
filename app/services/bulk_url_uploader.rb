@@ -89,6 +89,10 @@ class BulkUrlUploader
       SearchgovUrlBulkUploaderJob.perform_later(@user, redis_key)
     end
 
+    def redis_key
+      @redis_key ||= "bulk_url_upload:#{@file.original_filename}:#{SecureRandom.uuid}"
+    end
+
     private
 
     def validate_file
@@ -104,10 +108,6 @@ class BulkUrlUploader
     def save_uploader
       redis = Redis.new(host: REDIS_HOST, port: REDIS_PORT)
       redis.set(redis_key, Marshal.dump(@uploader))
-    end
-
-    def redis_key
-      @redis_key ||= "bulk_url_upload:#{@file.original_filename}:#{SecureRandom.uuid}"
     end
   end
 
