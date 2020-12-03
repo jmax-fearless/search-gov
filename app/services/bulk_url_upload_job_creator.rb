@@ -31,7 +31,10 @@ class BulkUrlUploadJobCreator
   end
 
   def ensure_present
-    raise(BulkUrlUploader::Error, 'Please choose a file to upload.') if @file.blank?
+    return if @file.present?
+
+    error_message = 'Please choose a file to upload.'
+    raise(BulkUrlUploader::Error, error_message)
   end
 
   def ensure_not_too_big
