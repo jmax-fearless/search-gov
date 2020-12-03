@@ -9,9 +9,8 @@ module Admin
     def upload
       begin
         file = params[:bulk_upload_urls]
-        raise(BulkUrlUploader::Error, 'Please choose a file to upload.') if file.blank?
-
-        BulkUrlUploadJobCreator.new(file, current_user).create_job!
+        job_creator = BulkUrlUploadJobCreator.new(file, current_user)
+        job_creator.create_job!
         flash[:success] = success_message(file.original_filename)
       rescue BulkUrlUploader::Error => e
         flash[:error] = e.message

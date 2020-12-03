@@ -18,6 +18,7 @@ class BulkUrlUploadJobCreator
   end
 
   def validate_file
+    ensure_present
     ensure_valid_content_type
     ensure_not_too_big
   end
@@ -27,6 +28,10 @@ class BulkUrlUploadJobCreator
 
     error_message = "Files of type #{@file&.content_type} are not supported."
     raise(BulkUrlUploader::Error, error_message)
+  end
+
+  def ensure_present
+    raise(BulkUrlUploader::Error, 'Please choose a file to upload.') if @file.blank?
   end
 
   def ensure_not_too_big
