@@ -76,12 +76,53 @@ class BulkUrlUploader
     end
   end
 
+  class UploadJobCreator
+    def initialize(file, user)
+      @file = file
+      @user = user
+    end
+
+    def create_job!
+      validate_file
+      create_uploader
+      save_uploader
+      SearchgovUrlBulkUploaderJob.perform_later(@user, redis_key)
+    end
+
+    private
+
+    def validate_file
+      BulkUrlUploader::Validator.new(@file).validate!
+    end
+
+    def create_uploader
+      urls = @file.tempfile.readlines
+      filename= @file.original_filename
+      @uploader = BulkUrlUploader.new(filename, urls)
+    end
+
+    def save_uploader
+      redis = Redis.new(host: REDIS_HOST, port: REDIS_PORT)
+      redis.set(redis_key, Marshal.dump(@uploader))
+    end
+
+    def redis_key
+      @redis_key ||= "bulk_url_upload:#{@file.original_filename}:#{SecureRandom.uuid}"
+    end
+  end
+
+  def self.create_job(uploaded_file, user)
+    job_creator = UploadJobCreator.new(uploaded_file, user)
+    job_creator.create_job!
+  end
+
   def initialize(name, urls)
     @urls = urls
-    @results = Results.new(name)
+    @name = name
   end
 
   def upload_and_index
+    @results = Results.new(@name)
     upload_urls
     index_domains
   end

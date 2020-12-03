@@ -3,11 +3,14 @@
 class SearchgovUrlBulkUploaderJob < ApplicationJob
   queue_as :searchgov
 
-  def perform(user, urls_redis_key)
-    @user = user
-    @urls_redis_key = urls_redis_key
+  delegate :upload_and_index, to: :@uploader
 
-    uploader.upload_and_index
+  def perform(user, uploader_redis_key)
+    @user = user
+    @uploader_redis_key = uploader_redis_key
+
+    retrieve_uploader
+    upload_and_index
     report_results
   end
 
@@ -17,33 +20,23 @@ class SearchgovUrlBulkUploaderJob < ApplicationJob
   end
 
   def log_results
-    results = uploader.results
+    results = @uploader.results
     Rails.logger.info "SearchgovUrlBulkUploaderJob: #{results.name}"
     Rails.logger.info "    #{results.total_count} URLs"
     Rails.logger.info "    #{results.error_count} errors"
   end
 
   def send_results_email
-    results = uploader.results
+    results = @uploader.results
     email = BulkUrlUploadResultsMailer.with(user: @user, results: results).results_email
     email.deliver_now
   end
 
-  def uploader
-    @uploader ||= BulkUrlUploader.new(friendly_name, urls)
-  end
-
-  def urls
-    return @urls if @urls
-
+  def retrieve_uploader
     redis = Redis.new(host: REDIS_HOST, port: REDIS_PORT)
-    raw_urls = redis.get(@urls_redis_key)
-    redis.del(@urls_redis_key)
+    raw_uploader = redis.get(@uploader_redis_key)
+    redis.del(@uploader_redis_key)
 
-    @urls = Marshal.load(raw_urls)
-  end
-
-  def friendly_name
-    @urls_redis_key.split(':')[1]
+    @uploader = Marshal.load(raw_uploader)
   end
 end

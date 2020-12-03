@@ -14,6 +14,7 @@ describe SearchgovUrlBulkUploaderJob do
       ]
     end
     let(:url_file_contents) { urls.join("\n") + "\n" }
+    let(:uploader) { BulkUrlUploader.new('some-file.txt', urls) }
 
     let(:perform) do
       saved_perform_delivery = ActionMailer::Base.perform_deliveries
@@ -27,7 +28,7 @@ describe SearchgovUrlBulkUploaderJob do
     describe 'when there is a valid url list' do
       before do
         SearchgovDomain.create(domain: 'agency.gov')
-        redis.set(redis_key, url_file_contents)
+        redis.set(redis_key, Marshal.dump(uploader))
       end
 
       it 'uploads the first url' do
