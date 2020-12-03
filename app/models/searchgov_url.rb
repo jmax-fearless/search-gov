@@ -19,7 +19,7 @@ class SearchgovUrl < ApplicationRecord
   attr_reader :response, :document, :tempfile
   attr_readonly :url
 
-  validates_associated :searchgov_domain, on: :create
+  validates_associated :searchgov_domain, on: :create, message: 'Domain does not exist'
   validates_presence_of :searchgov_domain, on: :create
 
   validates :url, uniqueness: true
