@@ -12,8 +12,9 @@ class BulkUrlUploadJobCreator
 
   def save_tempfile
     validate_file
+    urls = @file.tempfile.readlines
     redis = Redis.new(host: REDIS_HOST, port: REDIS_PORT)
-    redis.set(redis_key, @file.tempfile.read)
+    redis.set(redis_key, Marshal.dump(urls))
     redis_key
   end
 

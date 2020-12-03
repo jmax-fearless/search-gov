@@ -40,7 +40,7 @@ class SearchgovUrlBulkUploaderJob < ApplicationJob
     raw_urls = redis.get(@urls_redis_key)
     redis.del(@urls_redis_key)
 
-    @urls = StringIO.new(raw_urls)
+    @urls = Marshal.load(raw_urls)
   end
 
   def friendly_name

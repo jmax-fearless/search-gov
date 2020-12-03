@@ -76,8 +76,8 @@ class BulkUrlUploader
     end
   end
 
-  def initialize(name, url_file)
-    @url_file = url_file
+  def initialize(name, urls)
+    @urls = urls
     @results = Results.new(name)
   end
 
@@ -87,7 +87,7 @@ class BulkUrlUploader
   end
 
   def upload_urls
-    @url_file.each_line do |raw_url|
+    @urls.each do |raw_url|
       add_url(raw_url)
     end
   end
