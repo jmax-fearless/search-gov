@@ -21,11 +21,10 @@ module Admin
     end
 
     def success_message(filename)
-      <<~EOF
+      <<~SUCCESS_MESSAGE
         Successfully uploaded #{filename} for processing.
-        <br />
         The results will be emailed to you.
-      EOF
+      SUCCESS_MESSAGE
     end
   end
 end
