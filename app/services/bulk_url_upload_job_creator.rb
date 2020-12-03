@@ -18,30 +18,7 @@ class BulkUrlUploadJobCreator
   end
 
   def validate_file
-    ensure_present
-    ensure_valid_content_type
-    ensure_not_too_big
-  end
-
-  def ensure_valid_content_type
-    return if BulkUrlUploader::VALID_CONTENT_TYPES.include?(@file&.content_type)
-
-    error_message = "Files of type #{@file&.content_type} are not supported."
-    raise(BulkUrlUploader::Error, error_message)
-  end
-
-  def ensure_present
-    return if @file.present?
-
-    error_message = 'Please choose a file to upload.'
-    raise(BulkUrlUploader::Error, error_message)
-  end
-
-  def ensure_not_too_big
-    return if @file&.size <= BulkUrlUploader::MAXIMUM_FILE_SIZE
-
-    error_message = "#{@file.original_filename} is too big; please split it."
-    raise(BulkUrlUploader::Error, error_message)
+    BulkUrlUploader::Validator.new(@file).validate!
   end
 
   def redis_key
