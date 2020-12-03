@@ -43,7 +43,7 @@ class BulkUrlUploader
     end
   end
 
-  class Validator
+  class UrlFileValidator
     def initialize(uploaded_file)
       @uploaded_file = uploaded_file
     end
@@ -55,9 +55,9 @@ class BulkUrlUploader
     end
 
     def ensure_valid_content_type
-      return if BulkUrlUploader::VALID_CONTENT_TYPES.include?(@uploaded_file&.content_type)
+      return if BulkUrlUploader::VALID_CONTENT_TYPES.include?(@uploaded_file.content_type)
 
-      error_message = "Files of type #{@uploaded_file&.content_type} are not supported."
+      error_message = "Files of type #{@uploaded_file.content_type} are not supported."
       raise(BulkUrlUploader::Error, error_message)
     end
 
@@ -69,7 +69,7 @@ class BulkUrlUploader
     end
 
     def ensure_not_too_big
-      return if @uploaded_file&.size <= BulkUrlUploader::MAXIMUM_FILE_SIZE
+      return if @uploaded_file.size <= BulkUrlUploader::MAXIMUM_FILE_SIZE
 
       error_message = "#{@uploaded_file.original_filename} is too big; please split it."
       raise(BulkUrlUploader::Error, error_message)
@@ -92,7 +92,7 @@ class BulkUrlUploader
     private
 
     def validate_file
-      BulkUrlUploader::Validator.new(@file).validate!
+      BulkUrlUploader::UrlFileValidator.new(@file).validate!
     end
 
     def create_uploader
