@@ -49,13 +49,16 @@ describe SearchgovUrl do
   end
 
   describe 'validations' do
-    it 'requires a valid domain' do
-      pending "probably removable, but get Martha's opinion first"
+    describe 'when the URL domain does not already exist in our database' do
+      let(:url) { 'https://new-agency.com/index.html' }
 
-      searchgov_url = SearchgovUrl.new(url: 'https://foo/bar')
-      expect(searchgov_url).not_to be_valid
-      expect(searchgov_url.errors.messages[:searchgov_domain]).
-        to include 'is invalid'
+      it { is_expected.not_to be_valid }
+
+      it 'generates a helpful error message' do
+        searchgov_url.valid?
+        expect(searchgov_url.errors.messages[:searchgov_domain]).
+          to include 'is not a valid SearchgovDomain'
+      end
     end
 
     describe 'validating url uniqueness' do
