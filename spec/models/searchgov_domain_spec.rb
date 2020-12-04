@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe SearchgovDomain do
-  let(:domain) { 'searchgov.gov' }
   subject(:searchgov_domain) { SearchgovDomain.new(domain: domain, scheme: 'http') }
+
+  let(:domain) { 'searchgov.gov' }
 
   it { is_expected.to have_readonly_attribute(:domain) }
 
