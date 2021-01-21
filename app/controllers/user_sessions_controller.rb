@@ -4,7 +4,28 @@ class UserSessionsController < ApplicationController
   before_action :require_user, only: :destroy
 
   def security_notification
-    redirect_to(account_path) if current_user && current_user&.complete?
+    # DEBUG
+    # puts "UserSessionsController#security_notification"
+    # puts "    current_user: #{current_user.inspect}"
+
+    # return unless current_user
+
+    # DEBUG
+    # puts "    current_user.login_allowed?: #{current_user.login_allowed?}"
+    # puts "    current_user.is_pending_approval?: #{current_user.is_pending_approval?}"
+
+    # unless current_user.login_allowed? || current_user.is_pending_approval?
+    #   flash[:error] =
+    #     'Access Denied: These credentials are not recognized as valid' \
+    #     ' for accessing Search.gov. Please reach out to' \
+    #     ' search@support.digitalgov.gov if you believe this is in error.'
+    #   return
+    # end
+
+    finder = LandingPageFinder.new(current_user, nil)
+    redirect_to(finder.landing_page)
+  rescue LandingPageFinder::Error => e
+    flash[:error] = e.message
   end
 
   def destroy

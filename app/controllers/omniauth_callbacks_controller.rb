@@ -1,18 +1,13 @@
 # frozen_string_literal: true
 
 class OmniauthCallbacksController < ApplicationController
-  class LoginError < StandardError
-  end
-
   class InternalLoginError < StandardError
   end
 
   def login_dot_gov
     try_to_login
-  rescue LoginError
-    flash[:error] = 'Access Denied: These credentials are not recognized as valid' \
-                    ' for accessing Search.gov. <br />Please reach out to' \
-                    ' search@support.digitalgov.gov if you believe this is an error.'
+  rescue LandingPageFinder::Error => e
+    flash[:error] = e.message
     redirect_to('/login')
   rescue InternalLoginError => e
     flash[:error] = "login internal error: #{e.message}"
@@ -34,7 +29,7 @@ class OmniauthCallbacksController < ApplicationController
 
   def user
     @user ||= User.from_omniauth(omniauth_data)
-    raise LoginError unless @user&.login_allowed? || @user&.is_pending_approval?
+    raise(LandingPageFinder::Error, LandingPageFinder::ACCESS_DENIED_TEXT) unless @user&.login_allowed? || @user&.is_pending_approval?
 
     @user
   end
