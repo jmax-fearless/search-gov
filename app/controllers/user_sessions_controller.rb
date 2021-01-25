@@ -22,7 +22,7 @@ class UserSessionsController < ApplicationController
     #   return
     # end
 
-    finder = LandingPageFinder.new(current_user, nil)
+    finder = LandingPageFinder.new(current_user, params[:return_to])
     redirect_to(finder.landing_page)
   rescue LandingPageFinder::Error => e
     flash[:error] = e.message

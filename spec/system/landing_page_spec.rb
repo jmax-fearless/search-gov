@@ -1,94 +1,59 @@
-require 'spec_helper'
+#frozen_string_literal: true
 
-#ToDo: change domains to affiliates.
+require 'spec_helper'
 
 describe 'The landing page for GET login_dot_gov' do
   ACCESS_DENIED_TEXT= 'Access Denied'
-  # Bypass Authlogic's cleverness, which only gets in the way for
-  # this group of tests.
-  # before do
-  #   fake_authlogic_session= spy('fake_authlogic_session')
-  #   allow(UserSession).to receive(:create).and_return(fake_authlogic_session)
-  # end
 
-  # # work around infelicitous path naming
-  # let(:security_warning_path) { login_path }
-
-  # let(:omniauth_data) { mock_user_auth }
-
-  # let(:rails_session) { {} }
-
-  # let(:user_is_complete) { true }
-  # let(:user_is_persisted) { true }
-  # let(:user_is_super_admin) { false }
-  # let(:user_approval_status) { 'approved' }
-  # let(:user_domains) { [] }
-  # let(:user_default_domain) { nil }
-  # let(:user) do
-  #   new_user= User.new(email: 'user@test.gov',
-  #                      approval_status: user_approval_status,
-  #                      default_affiliate: user_default_domain,
-  #                      is_affiliate_admin: user_is_super_admin)
-  #   allow(new_user).to receive(:affiliates).and_return(user_domains)
-  #   new_user
-  # end
-
-  # before do
-  #   allow(user).to receive(:complete?).and_return(user_is_complete)
-  #   allow(user).to receive(:persisted?).and_return(user_is_persisted)
-  #   subject.instance_variable_set(:@user, user)
-  # end
-
-  # let(:get_login_dot_gov) do
-  #   request.env['omniauth.auth'] = omniauth_data
-  #   get :login_dot_gov, session: rails_session
-  # end
-
-  let(:first_domain)  do
-    Affiliate.create(website: 'https://first-domain.gov',
-                     display_name: 'First Domain',
+  let(:first_affiliate) do
+    Affiliate.create(website: 'https://first-affiliate.gov',
+                     display_name: 'First Affiliate',
                      name: 'first')
   end
 
-  let(:second_domain)  do
-    Affiliate.create(website: 'https://second-domain.gov',
-                     display_name: 'Second Domain',
+  let(:second_affiliate) do
+    Affiliate.create(website: 'https://second-affiliate.gov',
+                     display_name: 'Second Affiliate',
                      name: 'second')
   end
 
-  let(:user_approval_status) { 'pending_approval' }
+  let(:user_approval_status) { 'approved' }
   let(:user_first_name) { 'firstname' }
-  let(:user_domains) { [] }
+  let(:user_last_name) { 'lastname' }
+  let(:user_organization_name) { 'organization' }
+  let(:user_affiliates) { [] }
+  let(:user_default_affiliate) { nil }
+  let(:user_is_super_admin) { false }
 
-  let(:fake_user) do
-    fake_user = User.create(
+  let(:user) do
+    user = User.create(
       email: 'fake.user@test.org',
       first_name: user_first_name,
-      last_name: 'lastname',
-      organization_name: 'Fake Agency',
-      approval_status: user_approval_status
+      last_name: user_last_name,
+      organization_name: user_organization_name,
+      approval_status: user_approval_status,
+      is_affiliate_admin: user_is_super_admin
     )
-    fake_user.inviter = fake_user
-    fake_user.approval_status = user_approval_status
-    fake_user.affiliates= user_domains
-    fake_user.save!
 
-    fake_user
+    user.inviter = user
+    user.approval_status = user_approval_status
+    user.affiliates = user_affiliates
+    user.default_affiliate = user_default_affiliate
+    user.save!
+
+    user
   end
 
-  before do
-    allow_any_instance_of(ApplicationController).to receive(:current_user).
-      and_return(fake_user)
-  end
+  before { login(user) if user }
 
   describe 'when the user logged in without an explicit destination' do
-    before { visit root_path }
+    before { visit login_path }
 
     describe 'and omniauth failed to authenticate them' do
-      let(:fake_user) { nil }
+      let(:user) { nil }
 
       it 'is the security warning page' do
-        expect(page).to have_current_path(root_path)
+        expect(page).to have_current_path(login_path, ignore_query: true)
       end
 
       it 'has a flash message about the user not being approved' do
@@ -100,7 +65,7 @@ describe 'The landing page for GET login_dot_gov' do
       let(:user_approval_status) { 'not_approved' }
 
       it 'is the security warning page' do
-        expect(page).to have_current_path(root_path)
+        expect(page).to have_current_path(login_path, ignore_query: true)
       end
 
       it 'has a flash message about the user not being approved' do
@@ -112,215 +77,158 @@ describe 'The landing page for GET login_dot_gov' do
       let(:user_approval_status) { 'pending_approval' }
 
       it 'is the users account page' do
-        expect(page).to have_current_path(edit_account_path)
+        expect(page).to have_current_path(edit_account_path, ignore_query: true)
       end
     end
 
-    describe 'and the user is not complete' do
-      let(:user_approval_status) { 'approved' }
+    describe 'and the user is not complete because missing a first name' do
       let(:user_first_name) { nil }
 
       it 'is the users account page' do
-        expect(page).to have_current_path(edit_account_path)
+        expect(page).to have_current_path(edit_account_path, ignore_query: true)
       end
     end
 
-    describe 'and the user is not associated with any domains' do
-      let(:user_approval_status) { 'approved' }
-      let(:user_domains) { [] }
+    describe 'and the user is not complete because missing a last name' do
+      let(:user_last_name) { nil }
+
+      it 'is the users account page' do
+        expect(page).to have_current_path(edit_account_path, ignore_query: true)
+      end
+    end
+
+    describe 'and the user is not complete because missing an organization name' do
+      let(:user_organization_name) { nil }
+
+      it 'is the users account page' do
+        expect(page).to have_current_path(edit_account_path, ignore_query: true)
+      end
+    end
+
+    describe 'and the user is not associated with any affiliates' do
+      let(:user_affiliates) { [] }
 
       it 'is the new site page' do
-        expect(page).to have_current_path(new_site_path)
+        expect(page).to have_current_path(new_site_path, ignore_query: true)
       end
     end
 
-    describe 'and the user is a member of at least one domain' do
-      let(:user_approval_status) { 'approved' }
-      let(:user_domains) { [first_domain, second_domain] }
+    describe 'and the user is a member of at least one affiliate' do
+      let(:user_affiliates) { [first_affiliate, second_affiliate] }
 
-      it 'is the first domain the user is a member of' do
-        expect(page).to have_current_path(site_path(first_domain))
+      it 'is the first affiliate the user is a member of' do
+        expect(page).to have_current_path(site_path(first_affiliate), ignore_query: true)
       end
     end
 
-    # describe 'and the user has a default domain' do
-    #   let(:user_domains) { [first_domain, second_domain] }
-    #   let(:user_default_domain) { second_domain }
+    describe 'and the user has a default affiliate' do
+      let(:user_affiliates) { [first_affiliate, second_affiliate] }
+      let(:user_default_affiliate) { second_affiliate }
 
-    #   it 'is the default domain' do
-    #     expect(get_login_dot_gov).to redirect_to(site_path(user_default_domain))
-    #   end
-    # end
+      it 'is the default affiliate' do
+        expect(page).to have_current_path(site_path(user_default_affiliate), ignore_query: true)
+      end
+    end
 
-    # describe 'and the user is a super admin' do
-    #   let(:user_is_super_admin) { true }
-    #   it 'is the admin page' do
-    #     expect(get_login_dot_gov).to redirect_to(admin_home_page_path)
-    #   end
-    # end
+    describe 'and the user is a super admin' do
+      let(:user_is_super_admin) { true }
+
+      it 'is the admin page' do
+        expect(page).to have_current_path(admin_home_page_path, ignore_query: true)
+      end
+    end
   end
 
-  # describe 'when the user logged in with an explicit destination' do
-  #   let(:explicit_destination) { '/explicit_destination' }
-  #   let(:rails_session) { { return_to: explicit_destination } }
+  describe 'when the user logged in with an explicit destination' do
+    let(:user_is_super_admin) { true }
+    let(:explicit_destination) { '/admin/sayt_filters' }
+    let(:path) { "#{login_path}?return_to=#{explicit_destination}" }
 
-  #   describe 'and omniauth failed to authenticate them' do
-  #     let(:omniauth_data) { nil }
+    before { visit path }
 
-  #     it 'is the security warning page' do
-  #       expect(get_login_dot_gov).to redirect_to(security_warning_path)
-  #     end
-  #   end
+    describe 'and omniauth failed to authenticate them' do
+      let(:user) { nil }
 
-  #   describe 'and the user cannot be persisted' do
-  #     let(:user_is_persisted) { false }
+      it 'is the security warning page' do
+        expect(page).to have_current_path(login_path, ignore_query: true)
+      end
 
-  #     it 'is the security warning page' do
-  #       expect(get_login_dot_gov).to redirect_to(security_warning_path)
-  #     end
-  #   end
+      it 'has a flash message about the user not being approved' do
+        expect(page).to have_text(ACCESS_DENIED_TEXT)
+      end
+    end
 
-  #   describe 'and the user is not approved' do
-  #     let(:user_approval_status) { 'not_approved' }
+    describe 'and the user is not approved' do
+      let(:user_approval_status) { 'not_approved' }
 
-  #     it 'is the security warning page' do
-  #       expect(get_login_dot_gov).to redirect_to(security_warning_path)
-  #     end
-  #   end
+      it 'is the security warning page' do
+        expect(page).to have_current_path(login_path, ignore_query: true)
+      end
+    end
 
-  #   describe 'and the user is pending approval' do
-  #     let(:user_approval_status) { 'pending_approval' }
+    describe 'and the user is pending approval' do
+      let(:user_approval_status) { 'pending_approval' }
 
-  #     it 'is the users account page' do
-  #       expect(get_login_dot_gov).to redirect_to(edit_account_path)
-  #     end
-  #   end
+      it 'is the users account page' do
+        expect(page).to have_current_path(edit_account_path, ignore_query: true)
+      end
+    end
 
-  #   describe 'and the user is not complete' do
-  #     let(:user_is_complete) { false }
+    describe 'and the user is not complete because missing a first name' do
+      let(:user_first_name) { nil }
 
-  #     it 'is the users account page' do
-  #       expect(get_login_dot_gov).to redirect_to(edit_account_path)
-  #     end
-  #   end
+      it 'is the users account page' do
+        expect(page).to have_current_path(edit_account_path, ignore_query: true)
+      end
+    end
 
-  #   describe 'and the user is not associated with any domains' do
-  #     it 'is the explicit destination' do
-  #       expect(get_login_dot_gov).to redirect_to(explicit_destination)
-  #     end
-  #   end
+    describe 'and the user is not complete because missing a last name' do
+      let(:user_last_name) { nil }
 
-  #   describe 'and the user is a member of at least one domain' do
-  #     let(:user_domains) { [first_domain, second_domain] }
+      it 'is the users account page' do
+        expect(page).to have_current_path(edit_account_path, ignore_query: true)
+      end
+    end
 
-  #     it 'is the explicit destination' do
-  #       expect(get_login_dot_gov).to redirect_to(explicit_destination)
-  #     end
-  #   end
+    describe 'and the user is not complete because missing an organization name' do
+      let(:user_organization_name) { nil }
 
-  #   describe 'and the user has a default domain' do
-  #     let(:user_domains) { [first_domain, second_domain] }
-  #     let(:user_default_domain) { second_domain }
+      it 'is the users account page' do
+        expect(page).to have_current_path(edit_account_path, ignore_query: true)
+      end
+    end
 
-  #     it 'is the explicit destination' do
-  #       expect(get_login_dot_gov).to redirect_to(explicit_destination)
-  #     end
-  #   end
+    describe 'and the user is not associated with any affiliates' do
+      let(:user_affiliates) { [] }
 
-  #   describe 'and the user is a super admin' do
-  #     let(:user_is_super_admin) { true }
+      it 'is the explicit destination' do
+        expect(page).to have_current_path(explicit_destination)
+      end
+    end
 
-  #     it 'is the explicit destination' do
-  #       expect(get_login_dot_gov).to redirect_to(explicit_destination )
-  #     end
-  #   end
-  # end
+    describe 'and the user is a member of at least one affiliate' do
+      let(:user_affiliates) { [first_affiliate, second_affiliate] }
+
+      it 'is the explicit destination' do
+        expect(page).to have_current_path(explicit_destination)
+      end
+    end
+
+    describe 'and the user has a default affiliate' do
+      let(:user_affiliates) { [first_affiliate, second_affiliate] }
+      let(:user_default_affiliate) { second_affiliate }
+
+      it 'is the explicit destination' do
+        expect(page).to have_current_path(explicit_destination)
+      end
+    end
+
+    describe 'and the user is a super admin' do
+      let(:user_is_super_admin) { true }
+
+      it 'is the explicit destination' do
+        expect(page).to have_current_path(explicit_destination )
+      end
+    end
+  end
 end
-
-# describe OmniauthCallbacksController do
-#   describe 'GET login_dot_gov' do
-#     let(:user) { users(:omniauth_user) }
-#     let(:auth) { mock_user_auth }
-
-#     let(:get_login_dot_gov) do
-#       # request.env['omniauth.auth'] = auth
-#       get :login_dot_gov
-#     end
-
-#     it 'calls reset_session' do
-#       expect_any_instance_of(ActionController::Metal).to receive(:reset_session)
-#       get_login_dot_gov
-#     end
-
-#     context 'when the login is successful' do
-#       before { get_login_dot_gov }
-
-#       it { is_expected.to assign_to(:user).with(user) }
-#     end
-
-#     it 'creates a user session' do
-#       expect(UserSession).to receive(:create).with(user).and_call_original
-#       get_login_dot_gov
-#     end
-
-#     context 'securing the session' do
-#       let(:session) { instance_double(UserSession) }
-#       let(:secure_cookies) { Rails.application.config.ssl_options[:secure_cookies] }
-
-#       before do
-#         allow(UserSession).to receive(:create).with(user).and_return(session)
-#       end
-
-#       it 'sets the session security' do
-#         expect(session).to receive(:secure=).with(secure_cookies)
-#         get_login_dot_gov
-#       end
-#     end
-
-#     context 'when the user is new' do
-#       let(:email) { 'brandnewuser@gsa.gov' }
-#       let(:uid) { 'newuid123' }
-#       let(:auth) { mock_user_auth(email, uid) }
-
-#       it 'creates a new user' do
-#         expect { get_login_dot_gov }.to change { User.count }.by(1)
-#       end
-
-#       it 'creates a user with the email and UID from omniauth' do
-#         get_login_dot_gov
-#         user = User.last
-#         expect(user.email).to eq 'brandnewuser@gsa.gov'
-#         expect(user.uid).to eq 'newuid123'
-#       end
-#     end
-
-#     context 'when an existing user with no uid info is saved' do
-#       let(:user) { users(:user_without_uid) }
-#       let(:auth) { mock_user_auth(user.email, 'newuid123') }
-
-#       it 'updates the user record with the UID' do
-#         expect { get_login_dot_gov }.to change{ user.reload.uid }.
-#           from(nil).to('newuid123')
-#       end
-#     end
-
-#     context 'when the user record cannot be persisted to the database' do
-#       before do
-#         allow_any_instance_of(User).to receive(:persisted?).and_return(false)
-#       end
-
-#       it 'redirects to access-denied page' do
-#         expect(get_login_dot_gov).to redirect_to('http://test.host/login')
-#       end
-#     end
-
-#     context 'when a user is not approved' do
-#       let(:user) { users(:affiliate_manager_with_not_approved_status) }
-#       let(:auth) { mock_user_auth(user.email, 'notapproved12345') }
-
-#       it 'redirects to access-denied page' do
-#         expect(get_login_dot_gov).to redirect_to('http://test.host/login')
-#       end
-#     end
-#   end
-# end
