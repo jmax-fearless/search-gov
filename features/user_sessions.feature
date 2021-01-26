@@ -1,4 +1,4 @@
-# Feature: User sessions
+Feature: User sessions
 
 #   @javascript
 #   Scenario: Already logged-in user visits login page
