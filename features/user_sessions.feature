@@ -1,20 +1,15 @@
-Feature: User sessions
+# Feature: User sessions
 
-  @javascript
-  Scenario: Already logged-in user visits login page
-    Given I am logged in with email "affiliate_admin@fixtures.org"
-    And I go to the login page
-    Then I should see "Contact Information"
+#   @javascript
+#   Scenario: Already logged-in user visits login page
+#     Given I am logged in with email "affiliate_admin@fixtures.org"
+#     And I go to the login page
+#     Then I should see "Contact Information"
 
   Scenario: Affiliate manager should be on the site home page upon successful login
     When I am logged in with email "affiliate_manager@fixtures.org"
     And I go to the login page
     Then I should be on the gobiernousa's Dashboard page
-
-  Scenario: Affiliate admin should be on the site home page upon successful login
-    When I am logged in with email "affiliate_admin@fixtures.org"
-    And I go to the login page
-    Then I should be on the new site page
 
   Scenario: User is not approved
     Given I am logged in with email "affiliate_manager_with_not_approved_status@fixtures.org"
@@ -33,21 +28,3 @@ Feature: User sessions
     And the time becomes 2017-03-30 12:00
     And I follow "Add Site"
     Then I should be on the login page
-
-  @javascript
-  Scenario: Already logged-in super admin logs out
-    Given I am logged in with email "affiliate_admin@fixtures.org"
-    When I go to the admin home page
-    Then I should not see "Security Notification"
-    When I follow "Sign Out"
-    And I go to the admin home page
-    Then I should see "Security Notification"
-
-  @javascript
-  Scenario: Already logged-in user logs out
-    Given I am logged in with email "affiliate_manager@fixtures.org"
-    When I go to the usagov's Dashboard page
-    Then I should not see "Security Notification"
-    When I sign out
-    And I go to the usagov's Dashboard page
-    Then I should see "Security Notification"
