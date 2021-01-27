@@ -31,6 +31,18 @@ GIT
     robots_tag_parser (0.1.0)
 
 GIT
+  remote: https://github.com/GSA/searchgov_style
+  revision: 8c6de3dc8b559ae3f238538801a7ccb32984a752
+  branch: main
+  specs:
+    searchgov_style (0.1.0)
+      rubocop (= 1.7.0)
+      rubocop-performance (~> 1.9)
+      rubocop-rails (~> 2.9)
+      rubocop-rake (~> 0.5)
+      rubocop-rspec (~> 2.1)
+
+GIT
   remote: https://github.com/GSA/sitelink_generator
   revision: 2f78cd142547a2a87e500266f1ef4eb5e281cc6b
   ref: 2f78cd142547a2a87e500266f1ef4eb5e281cc6b
@@ -175,7 +187,7 @@ GEM
     airbrake-ruby (2.12.0)
     american_date (1.1.1)
     arel (9.0.0)
-    ast (2.4.0)
+    ast (2.4.2)
     authlogic (3.8.0)
       activerecord (>= 3.2, < 5.3)
       activesupport (>= 3.2, < 5.3)
@@ -437,7 +449,6 @@ GEM
       terminal-table (>= 1.5.1)
     ice_nine (0.11.2)
     iso8601 (0.10.1)
-    jaro_winkler (1.5.2)
     jbuilder (2.6.4)
       activesupport (>= 3.0.0)
       multi_json (>= 1.2)
@@ -493,8 +504,6 @@ GEM
       rack-mobile-detect
       rails
     mono_logger (1.1.0)
-    mry (0.59.0.0)
-      rubocop (>= 0.41.0)
     multi_json (1.14.1)
     multi_test (0.1.2)
     multi_xml (0.6.0)
@@ -525,15 +534,14 @@ GEM
       cocaine (~> 0.5.5)
       mime-types
       mimemagic (~> 0.3.0)
-    parallel (1.17.0)
-    parser (2.6.3.0)
-      ast (~> 2.4.0)
+    parallel (1.20.1)
+    parser (3.0.0.0)
+      ast (~> 2.4.1)
     poltergeist (1.18.1)
       capybara (>= 2.1, < 4)
       cliver (~> 0.3.1)
       websocket-driver (>= 0.2.0)
     power_assert (1.1.4)
-    powerpack (0.1.2)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -618,6 +626,7 @@ GEM
     redis-store (1.6.0)
       redis (>= 2.2, < 5)
     ref (2.0.0)
+    regexp_parser (2.0.3)
     representable (3.0.4)
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
@@ -649,6 +658,7 @@ GEM
       rspec-mocks (>= 3.0.0)
     retriable (3.1.2)
     retry_block (1.2.0)
+    rexml (3.2.4)
     rspec-activemodel-mocks (1.0.3)
       activemodel (>= 3.0)
       activesupport (>= 3.0)
@@ -676,17 +686,30 @@ GEM
     rspec-support (3.8.2)
     rspec_junit_formatter (0.3.0)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rubocop (0.60.0)
-      jaro_winkler (~> 1.5.1)
+    rubocop (1.7.0)
       parallel (~> 1.10)
-      parser (>= 2.5, != 2.5.1.1)
-      powerpack (~> 0.1)
+      parser (>= 2.7.1.5)
       rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml
+      rubocop-ast (>= 1.2.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (~> 1.4.0)
-    rubocop-rspec (1.35.0)
-      rubocop (>= 0.60.0)
-    ruby-progressbar (1.10.1)
+      unicode-display_width (>= 1.4.0, < 2.0)
+    rubocop-ast (1.4.1)
+      parser (>= 2.7.1.5)
+    rubocop-performance (1.9.2)
+      rubocop (>= 0.90.0, < 2.0)
+      rubocop-ast (>= 0.4.0)
+    rubocop-rails (2.9.1)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 0.90.0, < 2.0)
+    rubocop-rake (0.5.1)
+      rubocop
+    rubocop-rspec (2.1.0)
+      rubocop (~> 1.0)
+      rubocop-ast (>= 1.1.0)
+    ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.2)
     ruby_dep (1.5.0)
     rubyzip (2.3.0)
@@ -867,7 +890,6 @@ DEPENDENCIES
   loofah (~> 2.6.0)
   medusa!
   mobile-fu (~> 1.4.0)
-  mry (= 0.59.0.0)
   mysql2 (~> 0.4.4)
   net-http-persistent (~> 2.9.3)
   newrelic_rpm (~> 5.0.0)
@@ -907,11 +929,10 @@ DEPENDENCIES
   rspec-json_expectations (~> 2.1.0)
   rspec-rails (~> 3.8.2)
   rspec_junit_formatter (~> 0.3.0)
-  rubocop (= 0.60.0)
-  rubocop-rspec (~> 1.35)
   sass (~> 3.3.0)
   sass-rails (~> 5.0.7)
   saxerator (~> 0.9.9)
+  searchgov_style!
   select2-rails (~> 4.0.3)
   shoulda-kept-assign-to (~> 1.1.0)
   shoulda-matchers (~> 4.1.1)
