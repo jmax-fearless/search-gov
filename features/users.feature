@@ -47,7 +47,7 @@ Feature: Users
       | first_name   | last_name         | email             |
       | Joe          | Schno             | jschmo@random.com |
     And I am logged in with email "jschmo@random.com"
-    Then I should be on the user account page
+    Then I should be on the user edit account page
     And I should see "Because you don't have a .gov or .mil email address, we need additional information."
 
   @javascript

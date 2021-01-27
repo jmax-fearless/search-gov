@@ -13,9 +13,6 @@ Feature:  Administration
     When I follow "Super Admin" in the main navigation bar
     Then I should be on the admin home page
 
-    When I follow "Sign Out"
-    Then I should be on the login page
-
   Scenario: Visiting the admin home page as an admin who is also an affiliate
     Given "affiliate_admin@fixtures.org" is an affiliate
     When I go to the admin home page
