@@ -74,13 +74,29 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user_session
+    # DEBUG
+    puts "ApplicationController#current_user_session(1): @current_user: #{@current_user.inspect}"
+
     return @current_user_session if defined?(@current_user_session)
     @current_user_session = UserSession.find
+
+    # DEBUG
+    puts "ApplicationController#current_user_session(2): @current_user: #{@current_user.inspect}"
+
+    @current_user_session
   end
 
   def current_user
+    # DEBUG
+    puts "ApplicationController#current_user(1): @current_user: #{@current_user.inspect}"
+
     return @current_user if defined?(@current_user)
     @current_user = current_user_session && current_user_session.user
+
+    # DEBUG
+    puts "ApplicationController#current_user(2): @current_user: #{@current_user.inspect}"
+
+    @current_user
   end
 
   def require_user

@@ -5,24 +5,16 @@ class UserSessionsController < ApplicationController
 
   def security_notification
     # DEBUG
-    # puts "UserSessionsController#security_notification"
-    # puts "    current_user: #{current_user.inspect}"
-
-    # return unless current_user
-
-    # DEBUG
-    # puts "    current_user.login_allowed?: #{current_user.login_allowed?}"
-    # puts "    current_user.is_pending_approval?: #{current_user.is_pending_approval?}"
-
-    # unless current_user.login_allowed? || current_user.is_pending_approval?
-    #   flash[:error] =
-    #     'Access Denied: These credentials are not recognized as valid' \
-    #     ' for accessing Search.gov. Please reach out to' \
-    #     ' search@support.digitalgov.gov if you believe this is in error.'
-    #   return
-    # end
+    puts "UserSessionsController#security_notification"
+    puts "    current_user: #{current_user.inspect}"
+    puts "    current_user.login_allowed?: #{current_user&.login_allowed?}"
+    puts "    current_user.is_pending_approval?: #{current_user&.is_pending_approval?}"
 
     finder = LandingPageFinder.new(current_user, params[:return_to])
+
+    # DEBUG
+    puts "    redirecting to #{finder.landing_page}"
+
     redirect_to(finder.landing_page)
   rescue LandingPageFinder::Error => e
     flash[:error] = e.message

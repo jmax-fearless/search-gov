@@ -17,6 +17,12 @@ class LandingPageFinder
   end
 
   def landing_page
+    # DEBUG
+    puts "LandingPageFinder::landing_page: @user: #{@user.inspect}; @return_to: #{@return_to.inspect}"
+    caller.take(3).each do |stack_frame|
+      puts "    #{stack_frame.inspect}"
+    end
+
     raise(Error, ACCESS_DENIED_TEXT) if !@user || @user.is_not_approved?
 
     return_value = destination_edit_account ||
@@ -26,7 +32,7 @@ class LandingPageFinder
       new_site_path
 
     # DEBUG
-    # puts "LandingPageFinder#landing_page: returning #{return_value.inspect}"
+    puts "LandingPageFinder#landing_page: returning #{return_value.inspect}"
 
     return_value
   end
@@ -77,11 +83,12 @@ class LandingPageFinder
   end
 
   def affiliate_site_page
-    return_value = if @user.default_affiliate
-      site_path(@user.default_affiliate)
-    elsif !@user.affiliates.empty?
-      site_path(@user.affiliates.first)
-    end
+    return_value =
+      if @user.default_affiliate
+        site_path(@user.default_affiliate)
+      elsif !@user.affiliates.empty?
+        site_path(@user.affiliates.first)
+      end
 
     # DEBUG
     # puts "LandingPageFinder#affiliate_site_page: returning #{return_value.inspect}"

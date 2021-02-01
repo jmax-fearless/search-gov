@@ -44,7 +44,16 @@ describe 'The landing page for GET login_dot_gov' do
     user
   end
 
-  before { login(user) if user }
+  before do
+    # DEBUG
+    # Tracer.add_filter do |event, file, line, id, binding, klass, *rest|
+    #   /^\/home\/jmax\/search-gov/ =~ file
+    # end
+
+    # Tracer.on do
+    login(user) if user
+    # end
+  end
 
   describe 'when the user logged in without an explicit destination' do
     before { visit login_path }

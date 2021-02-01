@@ -1,18 +1,17 @@
 # frozen_string_literal: true
 
 class OmniauthCallbacksController < ApplicationController
-  class InternalLoginError < StandardError
+  class OmniauthError < StandardError
   end
 
   def login_dot_gov
     try_to_login
-  rescue LandingPageFinder::Error => e
+  rescue OmniauthError => e
     flash[:error] = e.message
     redirect_to('/login')
-  rescue InternalLoginError => e
-    flash[:error] = "login internal error: #{e.message}"
-    redirect_to('/login')
   end
+
+  private
 
   def try_to_login
     @return_to = session[:return_to]
@@ -23,25 +22,26 @@ class OmniauthCallbacksController < ApplicationController
   end
 
   def destination
-    finder = LandingPageFinder.new(user, @return_to)
-    finder.landing_page
+    LandingPageFinder.new(user, @return_to).landing_page
+  rescue LandingPageFinder::Error => e
+    raise OmniauthError, e.message
   end
 
   def user
-    @user ||= User.from_omniauth(omniauth_data)
-    raise(LandingPageFinder::Error, LandingPageFinder::ACCESS_DENIED_TEXT) unless @user&.login_allowed? || @user&.is_pending_approval?
+    return @user if @user
 
-    @user
+    @user = User.from_omniauth(omniauth_data)
+    raise OmniauthError, 'db error creating user' unless @user.persisted?
   end
 
   def omniauth_data
-    raise InternalLoginError, 'no omniauth data' unless request.env['omniauth.auth']
+    raise OmniauthError, 'no omniauth data' unless request.env['omniauth.auth']
 
     request.env['omniauth.auth']
   end
 
   def credentials
-    raise InternalLoginError, 'no user credentials' unless omniauth_data['credentials']
+    raise OmniauthError, 'no user credentials' unless omniauth_data['credentials']
 
     omniauth_data['credentials']
   end

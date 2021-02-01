@@ -10,6 +10,10 @@ class Sites::BaseController < ApplicationController
   protected
 
   def require_login
+    # DEBUG
+    puts "Sites::BaseController#require_login: request: #{request.inspect}"
+    puts "Sites::BaseController#require_login: current_user: #{current_user.inspect}"
+
     unless current_user
       store_location
       redirect_to login_url
