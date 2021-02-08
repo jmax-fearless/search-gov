@@ -9,11 +9,11 @@ class ApplicationController < ActionController::Base
   SERP_RESULTS_PER_PAGE = 20
   PAGE_NOT_FOUND = 'https://www.usa.gov/search-error'
 
-  ADVANCED_PARAM_KEYS = %i(filetype filter query-not query-or query-quote).freeze
-  DUBLIN_CORE_PARAM_KEYS = %i(contributor publisher subject).freeze
-  FILTER_PARAM_KEYS = %i(since_date sort_by tbs until_date).freeze
+  ADVANCED_PARAM_KEYS = %i[filetype filter query-not query-or query-quote].freeze
+  DUBLIN_CORE_PARAM_KEYS = %i[contributor publisher subject].freeze
+  FILTER_PARAM_KEYS = %i[since_date sort_by tbs until_date].freeze
 
-  PERMITTED_PARAM_KEYS = %i(
+  PERMITTED_PARAM_KEYS = %i[
     affiliate
     autodiscovery_url
     channel
@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
     siteexclude
     sitelimit
     utf8
-  ).concat(ADVANCED_PARAM_KEYS).
+  ].concat(ADVANCED_PARAM_KEYS).
     concat(DUBLIN_CORE_PARAM_KEYS).
     concat(FILTER_PARAM_KEYS).freeze
 
@@ -47,9 +47,7 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_unless_affiliate
-    unless @affiliate
-      redirect_to(PAGE_NOT_FOUND) and return
-    end
+    redirect_to(PAGE_NOT_FOUND) and return unless @affiliate
   end
 
   def set_header_footer_fields
@@ -74,29 +72,15 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user_session
-    # DEBUG
-    puts "ApplicationController#current_user_session(1): @current_user: #{@current_user.inspect}"
-
     return @current_user_session if defined?(@current_user_session)
+
     @current_user_session = UserSession.find
-
-    # DEBUG
-    puts "ApplicationController#current_user_session(2): @current_user: #{@current_user.inspect}"
-
-    @current_user_session
   end
 
   def current_user
-    # DEBUG
-    puts "ApplicationController#current_user(1): @current_user: #{@current_user.inspect}"
-
     return @current_user if defined?(@current_user)
+
     @current_user = current_user_session && current_user_session.user
-
-    # DEBUG
-    puts "ApplicationController#current_user(2): @current_user: #{@current_user.inspect}"
-
-    @current_user
   end
 
   def require_user
