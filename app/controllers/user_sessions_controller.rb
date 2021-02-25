@@ -5,15 +5,17 @@ class UserSessionsController < ApplicationController
 
   def security_notification
     # DEBUG
-    puts "UserSessionsController#security_notification"
-    puts "    current_user: #{current_user.inspect}"
-    puts "    current_user.login_allowed?: #{current_user&.login_allowed?}"
-    puts "    current_user.is_pending_approval?: #{current_user&.is_pending_approval?}"
+    # puts "UserSessionsController#security_notification"
+    # puts "    current_user: #{current_user.inspect}"
+    # puts "    current_user&.login_allowed?: #{current_user&.login_allowed?}"
+    # puts "    current_user&.is_pending_approval?: #{current_user&.is_pending_approval?}"
+
+    return unless current_user
 
     finder = LandingPageFinder.new(current_user, params[:return_to])
 
     # DEBUG
-    puts "    redirecting to #{finder.landing_page}"
+    # puts "    redirecting to #{finder.landing_page}"
 
     redirect_to(finder.landing_page)
   rescue LandingPageFinder::Error => e

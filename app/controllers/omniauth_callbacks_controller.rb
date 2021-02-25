@@ -5,7 +5,12 @@ class OmniauthCallbacksController < ApplicationController
   end
 
   def login_dot_gov
-    try_to_login
+    if !user
+      flash[:error] = LandingPageFinder::ACCESS_DENIED_TEXT
+      redirect_to('/login')
+    else
+      try_to_login
+    end
   rescue OmniauthError => e
     flash[:error] = e.message
     redirect_to('/login')
@@ -22,6 +27,8 @@ class OmniauthCallbacksController < ApplicationController
   end
 
   def destination
+    raise OmniauthError, LandingPageFinder::ACCESS_DENIED_TEXT unless user&.approved?
+
     LandingPageFinder.new(user, @return_to).landing_page
   rescue LandingPageFinder::Error => e
     raise OmniauthError, e.message
@@ -32,6 +39,7 @@ class OmniauthCallbacksController < ApplicationController
 
     @user = User.from_omniauth(omniauth_data)
     raise OmniauthError, 'db error creating user' unless @user.persisted?
+    @user
   end
 
   def omniauth_data
