@@ -10,6 +10,8 @@ Feature: User sessions
     And I go to the login page
     Then I should be on the admin home page
 
+  # SRCH-1941
+  @wip
   Scenario: User is not approved
     Given I am logged in with email "affiliate_manager_with_not_approved_status@fixtures.org"
     And I go to the login page
