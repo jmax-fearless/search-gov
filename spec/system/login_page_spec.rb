@@ -1,9 +1,9 @@
-#frozen_string_literal: true
+# frozen_string_literal: true
 
 require 'spec_helper'
 
-describe 'The landing page for GET login_dot_gov' do
-  ACCESS_DENIED_TEXT= 'Access Denied'
+describe 'The login page (GET login_dot_gov)' do
+  let(:explicit_destination) { nil }
 
   let(:first_affiliate) do
     Affiliate.create(website: 'https://first-affiliate.gov',
@@ -27,11 +27,11 @@ describe 'The landing page for GET login_dot_gov' do
 
   let(:user) do
     user = User.create(
-      email: 'fake.user@test.org',
+      email: 'fake.user@agency.gov',
       first_name: user_first_name,
       last_name: user_last_name,
       organization_name: user_organization_name,
-      approval_status: user_approval_status,
+      approval_status: 'approved',
       is_affiliate_admin: user_is_super_admin
     )
 
@@ -45,198 +45,169 @@ describe 'The landing page for GET login_dot_gov' do
   end
 
   before do
-    # DEBUG
-    # Tracer.add_filter do |event, file, line, id, binding, klass, *rest|
-    #   /^\/home\/jmax\/search-gov/ =~ file
-    # end
+    stub_const('ACCESS_DENIED_TEXT', 'Access Denied')
 
-    # Tracer.on do
     login(user) if user
-    # end
+
+    if explicit_destination
+      visit "#{login_path}?return_to=#{explicit_destination}"
+    else
+      visit login_path
+    end
   end
 
-  describe 'when the user logged in without an explicit destination' do
-    before { visit login_path }
+  context 'when there is no current user' do
+    let(:user) { nil }
 
-    describe 'and omniauth failed to authenticate them' do
-      let(:user) { nil }
+    it 'is the security warning page' do
+      expect(page).to have_current_path(login_path, ignore_query: true)
+    end
+
+    it 'does not have a flash message' do
+      expect(page).not_to have_text(ACCESS_DENIED_TEXT)
+    end
+
+    context 'when they specified an explicit destination' do
+      let(:explicit_destination) { '/sites/new' }
 
       it 'is the security warning page' do
         expect(page).to have_current_path(login_path, ignore_query: true)
       end
 
-      it 'has a flash message about the user not being approved' do
-        expect(page).to have_text(ACCESS_DENIED_TEXT)
-      end
-    end
-
-    describe 'and the user is not approved' do
-      let(:user_approval_status) { 'not_approved' }
-
-      it 'is the security warning page' do
-        expect(page).to have_current_path(login_path, ignore_query: true)
-      end
-
-      it 'has a flash message about the user not being approved' do
-        expect(page).to have_text(ACCESS_DENIED_TEXT)
-      end
-    end
-
-    describe 'and the user is pending approval' do
-      let(:user_approval_status) { 'pending_approval' }
-
-      it 'is the users account page' do
-        expect(page).to have_current_path(edit_account_path, ignore_query: true)
-      end
-    end
-
-    describe 'and the user is not complete because missing a first name' do
-      let(:user_first_name) { nil }
-
-      it 'is the users account page' do
-        expect(page).to have_current_path(edit_account_path, ignore_query: true)
-      end
-    end
-
-    describe 'and the user is not complete because missing a last name' do
-      let(:user_last_name) { nil }
-
-      it 'is the users account page' do
-        expect(page).to have_current_path(edit_account_path, ignore_query: true)
-      end
-    end
-
-    describe 'and the user is not complete because missing an organization name' do
-      let(:user_organization_name) { nil }
-
-      it 'is the users account page' do
-        expect(page).to have_current_path(edit_account_path, ignore_query: true)
-      end
-    end
-
-    describe 'and the user is not associated with any affiliates' do
-      let(:user_affiliates) { [] }
-
-      it 'is the new site page' do
-        expect(page).to have_current_path(new_site_path, ignore_query: true)
-      end
-    end
-
-    describe 'and the user is a member of at least one affiliate' do
-      let(:user_affiliates) { [first_affiliate, second_affiliate] }
-
-      it 'is the first affiliate the user is a member of' do
-        expect(page).to have_current_path(site_path(first_affiliate), ignore_query: true)
-      end
-    end
-
-    describe 'and the user has a default affiliate' do
-      let(:user_affiliates) { [first_affiliate, second_affiliate] }
-      let(:user_default_affiliate) { second_affiliate }
-
-      it 'is the default affiliate' do
-        expect(page).to have_current_path(site_path(user_default_affiliate), ignore_query: true)
-      end
-    end
-
-    describe 'and the user is a super admin' do
-      let(:user_is_super_admin) { true }
-
-      it 'is the admin page' do
-        expect(page).to have_current_path(admin_home_page_path, ignore_query: true)
+      it 'does not have a flash message' do
+        expect(page).not_to have_text(ACCESS_DENIED_TEXT)
       end
     end
   end
 
-  describe 'when the user logged in with an explicit destination' do
+  context 'when the user is pending approval' do
+    let(:user_approval_status) { 'pending_approval' }
+
+    it 'is the users account page' do
+      expect(page).to have_current_path(edit_account_path, ignore_query: true)
+    end
+
+    context 'when they specified an explicit destination' do
+      let(:explicit_destination) { '/sites/new' }
+
+      it 'is the users account page' do
+        expect(page).to have_current_path(edit_account_path, ignore_query: true)
+      end
+    end
+  end
+
+  context 'when the user is not complete because missing a first name' do
+    let(:user_first_name) { nil }
+
+    it 'is the users account page' do
+      expect(page).to have_current_path(edit_account_path, ignore_query: true)
+    end
+
+    context 'when they specified an explicit destination' do
+      let(:explicit_destination) { '/sites/new' }
+
+      it 'is the users account page' do
+        expect(page).to have_current_path(edit_account_path, ignore_query: true)
+      end
+    end
+  end
+
+  context 'when the user is not complete because missing a last name' do
+    let(:user_last_name) { nil }
+
+    it 'is the users account page' do
+      expect(page).to have_current_path(edit_account_path, ignore_query: true)
+    end
+
+    context 'when they specified an explicit destination' do
+      let(:explicit_destination) { '/sites/new' }
+
+      it 'is the users account page' do
+        expect(page).to have_current_path(edit_account_path, ignore_query: true)
+      end
+    end
+  end
+
+  context 'when the user is not complete because missing an organization name' do
+    let(:user_organization_name) { nil }
+
+    it 'is the users account page' do
+      expect(page).to have_current_path(edit_account_path, ignore_query: true)
+    end
+
+    context 'when they specified an explicit destination' do
+      let(:explicit_destination) { '/sites/new' }
+
+      it 'is the users account page' do
+        expect(page).to have_current_path(edit_account_path, ignore_query: true)
+      end
+    end
+  end
+
+  context 'when the user is not associated with any affiliates' do
+    let(:user_affiliates) { [] }
+
+    it 'is the new site page' do
+      expect(page).to have_current_path(new_site_path, ignore_query: true)
+    end
+
+    context 'when they specified an explicit destination' do
+      let(:explicit_destination) { '/sites/new' }
+
+      it 'is the specified destination' do
+        expect(page).to have_current_path(explicit_destination)
+      end
+    end
+  end
+
+  context 'when the user is a member of at least one affiliate' do
+    let(:user_affiliates) { [first_affiliate, second_affiliate] }
+
+    it 'is the first affiliate the user is a member of' do
+      expect(page).to have_current_path(site_path(first_affiliate), ignore_query: true)
+    end
+
+    context 'when they specified an explicit destination' do
+      let(:explicit_destination) { '/sites/new' }
+
+      it 'is the specified destination' do
+        expect(page).to have_current_path(explicit_destination)
+      end
+    end
+  end
+
+  context 'when the user has a default affiliate' do
+    let(:user_affiliates) { [first_affiliate, second_affiliate] }
+    let(:user_default_affiliate) { second_affiliate }
+
+    it 'is the default affiliate' do
+      expect(page).to have_current_path(
+        site_path(user_default_affiliate),
+        ignore_query: true
+      )
+    end
+
+    context 'when they specified an explicit destination' do
+      let(:explicit_destination) { '/sites/new' }
+
+      it 'is the specified destination' do
+        expect(page).to have_current_path(explicit_destination)
+      end
+    end
+  end
+
+  context 'when the user is a super admin' do
     let(:user_is_super_admin) { true }
-    let(:explicit_destination) { '/admin/sayt_filters' }
-    let(:path) { "#{login_path}?return_to=#{explicit_destination}" }
 
-    before { visit path }
-
-    describe 'and omniauth failed to authenticate them' do
-      let(:user) { nil }
-
-      it 'is the security warning page' do
-        expect(page).to have_current_path(login_path, ignore_query: true)
-      end
-
-      it 'has a flash message about the user not being approved' do
-        expect(page).to have_text(ACCESS_DENIED_TEXT)
-      end
+    it 'is the admin page' do
+      expect(page).to have_current_path(admin_home_page_path, ignore_query: true)
     end
 
-    describe 'and the user is not approved' do
-      let(:user_approval_status) { 'not_approved' }
+    context 'when they specified an explicit destination' do
+      let(:explicit_destination) { '/sites/new' }
 
-      it 'is the security warning page' do
-        expect(page).to have_current_path(login_path, ignore_query: true)
-      end
-    end
-
-    describe 'and the user is pending approval' do
-      let(:user_approval_status) { 'pending_approval' }
-
-      it 'is the users account page' do
-        expect(page).to have_current_path(edit_account_path, ignore_query: true)
-      end
-    end
-
-    describe 'and the user is not complete because missing a first name' do
-      let(:user_first_name) { nil }
-
-      it 'is the users account page' do
-        expect(page).to have_current_path(edit_account_path, ignore_query: true)
-      end
-    end
-
-    describe 'and the user is not complete because missing a last name' do
-      let(:user_last_name) { nil }
-
-      it 'is the users account page' do
-        expect(page).to have_current_path(edit_account_path, ignore_query: true)
-      end
-    end
-
-    describe 'and the user is not complete because missing an organization name' do
-      let(:user_organization_name) { nil }
-
-      it 'is the users account page' do
-        expect(page).to have_current_path(edit_account_path, ignore_query: true)
-      end
-    end
-
-    describe 'and the user is not associated with any affiliates' do
-      let(:user_affiliates) { [] }
-
-      it 'is the explicit destination' do
+      it 'is the specified destination' do
         expect(page).to have_current_path(explicit_destination)
-      end
-    end
-
-    describe 'and the user is a member of at least one affiliate' do
-      let(:user_affiliates) { [first_affiliate, second_affiliate] }
-
-      it 'is the explicit destination' do
-        expect(page).to have_current_path(explicit_destination)
-      end
-    end
-
-    describe 'and the user has a default affiliate' do
-      let(:user_affiliates) { [first_affiliate, second_affiliate] }
-      let(:user_default_affiliate) { second_affiliate }
-
-      it 'is the explicit destination' do
-        expect(page).to have_current_path(explicit_destination)
-      end
-    end
-
-    describe 'and the user is a super admin' do
-      let(:user_is_super_admin) { true }
-
-      it 'is the explicit destination' do
-        expect(page).to have_current_path(explicit_destination )
       end
     end
   end

@@ -4,20 +4,14 @@ class UserSessionsController < ApplicationController
   before_action :require_user, only: :destroy
 
   def security_notification
-    # DEBUG
-    # puts "UserSessionsController#security_notification"
-    # puts "    current_user: #{current_user.inspect}"
-    # puts "    current_user&.login_allowed?: #{current_user&.login_allowed?}"
-    # puts "    current_user&.is_pending_approval?: #{current_user&.is_pending_approval?}"
-
     return unless current_user
 
-    finder = LandingPageFinder.new(current_user, params[:return_to])
-
-    # DEBUG
-    # puts "    redirecting to #{finder.landing_page}"
-
-    redirect_to(finder.landing_page)
+    if current_user.login_allowed?
+      finder = LandingPageFinder.new(current_user, params[:return_to])
+      redirect_to(finder.landing_page)
+    else
+      flash[:error] = LandingPageFinder::ACCESS_DENIED_TEXT
+    end
   rescue LandingPageFinder::Error => e
     flash[:error] = e.message
   end
