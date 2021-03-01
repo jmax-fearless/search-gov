@@ -38,3 +38,12 @@ Feature: User sessions
     When I sign out
     And I go to the usagov's Dashboard page
     Then I should see "Security Notification"
+
+  @javascript
+  Scenario: Already logged-in super-user logs out
+    Given I am logged in with email "affiliate_admin@fixtures.org"
+    When I go to the usagov's Dashboard page
+    Then I should not see "Security Notification"
+    When I sign out
+    And I go to the usagov's Dashboard page
+    Then I should see "Security Notification"
