@@ -6,12 +6,8 @@ class UserSessionsController < ApplicationController
   def security_notification
     return unless current_user
 
-    if current_user.login_allowed?
-      finder = LandingPageFinder.new(current_user, params[:return_to])
-      redirect_to(finder.landing_page)
-    else
-      flash[:error] = LandingPageFinder::ACCESS_DENIED_TEXT
-    end
+    finder = LandingPageFinder.new(current_user, params[:return_to])
+    redirect_to(finder.landing_page)
   rescue LandingPageFinder::Error => e
     flash[:error] = e.message
   end
