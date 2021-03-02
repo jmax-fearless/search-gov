@@ -9,11 +9,11 @@ class ApplicationController < ActionController::Base
   SERP_RESULTS_PER_PAGE = 20
   PAGE_NOT_FOUND = 'https://www.usa.gov/search-error'
 
-  ADVANCED_PARAM_KEYS = %i[filetype filter query-not query-or query-quote].freeze
-  DUBLIN_CORE_PARAM_KEYS = %i[contributor publisher subject].freeze
-  FILTER_PARAM_KEYS = %i[since_date sort_by tbs until_date].freeze
+  ADVANCED_PARAM_KEYS = %i(filetype filter query-not query-or query-quote).freeze
+  DUBLIN_CORE_PARAM_KEYS = %i(contributor publisher subject).freeze
+  FILTER_PARAM_KEYS = %i(since_date sort_by tbs until_date).freeze
 
-  PERMITTED_PARAM_KEYS = %i[
+  PERMITTED_PARAM_KEYS = %i(
     affiliate
     autodiscovery_url
     channel
@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
     siteexclude
     sitelimit
     utf8
-  ].concat(ADVANCED_PARAM_KEYS).
+  ).concat(ADVANCED_PARAM_KEYS).
     concat(DUBLIN_CORE_PARAM_KEYS).
     concat(FILTER_PARAM_KEYS).freeze
 
@@ -47,7 +47,9 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_unless_affiliate
-    redirect_to(PAGE_NOT_FOUND) && return unless @affiliate
+    unless @affiliate
+      redirect_to(PAGE_NOT_FOUND) and return
+    end
   end
 
   def set_header_footer_fields
@@ -73,22 +75,20 @@ class ApplicationController < ActionController::Base
 
   def current_user_session
     return @current_user_session if defined?(@current_user_session)
-
     @current_user_session = UserSession.find
   end
 
   def current_user
     return @current_user if defined?(@current_user)
-
-    @current_user = current_user_session&.user
+    @current_user = current_user_session && current_user_session.user
   end
 
   def require_user
-    return if current_user
-
-    store_location
-    redirect_to login_url
-    false
+    unless current_user
+      store_location
+      redirect_to login_url
+      false
+    end
   end
 
   def store_location
@@ -128,34 +128,30 @@ class ApplicationController < ActionController::Base
   end
 
   def highlighting_option
-    { enable_highlighting: permitted_params[:hl] != 'false' }
+    { enable_highlighting: permitted_params[:hl] == 'false' ? false : true }
   end
 
   def force_request_format
-    return if request&.format&.json?
+    return if request.format && request.format.json?
 
     if @affiliate.force_mobile_format? || permitted_params[:m] == 'true'
       request.format = :mobile
-    elsif permitted_params[:m] == 'false' || permitted_params[:m] == 'override'
+    elsif permitted_params[:m] == 'false' or permitted_params[:m] == 'override'
       request.format = :html
     end
   end
 
   def set_search_params
-    @search_params = ActiveSupport::HashWithIndifferentAccess.new(
-      query: @search.query,
-      affiliate: @affiliate.name
-    )
+    @search_params = ActiveSupport::HashWithIndifferentAccess.new(query: @search.query, affiliate: @affiliate.name)
     @search_params.merge!(sitelimit: permitted_params[:sitelimit]) if permitted_params[:sitelimit].present?
     @search_params.merge!(dc: permitted_params[:dc]) if permitted_params[:dc].present?
-
-    return unless @search.is_a? FilterableSearch
-
-    @search_params.merge!(channel: @search.rss_feed.id) if @search.is_a?(NewsSearch) && @search.rss_feed
-    @search_params.merge!(tbs: @search.tbs) if @search.tbs
-    @search_params.merge!(since_date: @search.since.strftime(I18n.t(:cdr_format))) if permitted_params[:since_date].present? && @search.since
-    @search_params.merge!(until_date: @search.until.strftime(I18n.t(:cdr_format))) if permitted_params[:until_date].present? && @search.until
-    @search_params.merge!(permitted_params.slice(:contributor, :publisher, :sort_by, :subject))
+    if @search.is_a? FilterableSearch
+      @search_params.merge!(channel: @search.rss_feed.id) if @search.is_a?(NewsSearch) && @search.rss_feed
+      @search_params.merge!(tbs: @search.tbs) if @search.tbs
+      @search_params.merge!(since_date: @search.since.strftime(I18n.t(:cdr_format))) if permitted_params[:since_date].present? && @search.since
+      @search_params.merge!(until_date: @search.until.strftime(I18n.t(:cdr_format))) if permitted_params[:until_date].present? && @search.until
+      @search_params.merge!(permitted_params.slice(:contributor, :publisher, :sort_by, :subject))
+    end
   end
 
   def set_search_page_title
