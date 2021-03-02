@@ -5,12 +5,7 @@ class OmniauthCallbacksController < ApplicationController
   end
 
   def login_dot_gov
-    if !user
-      flash[:error] = LandingPageFinder::ACCESS_DENIED_TEXT
-      redirect_to('/login')
-    else
-      try_to_login
-    end
+    try_to_login
   rescue OmniauthError => e
     flash[:error] = e.message
     redirect_to('/login')
