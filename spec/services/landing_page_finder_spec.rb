@@ -6,7 +6,17 @@ describe LandingPageFinder do
 
     let(:user) { nil }
     let(:return_to) { nil }
-    let(:finder) { LandingPageFinder.new(user, return_to) }
+    let(:finder) { described_class.new(user, return_to) }
+
+    context 'with a user who is not approved' do
+      let(:user) { users(:affiliate_manager_with_not_approved_status) }
+
+      it 'raises an error' do
+        expect { finder.landing_page }.
+          to raise_error(LandingPageFinder::Error,
+                         LandingPageFinder::ACCESS_DENIED_TEXT)
+      end
+    end
 
     describe 'with a user who is pending approval' do
       let(:user) { users(:affiliate_manager_with_pending_approval_status) }

@@ -1,4 +1,4 @@
-require 'tracer'
+# frozen_string_literal: true
 
 shared_examples 'restricted to approved user' do |request_method, action, parameters = nil|
 
@@ -35,6 +35,19 @@ shared_context 'approved user logged in' do
   before do
     UserSession.create current_user
     expect(User).to receive(:find_by_id).and_return(current_user)
+  end
+end
+
+shared_context 'not_approved user logged in' do
+  let(:current_user) { users(:affiliate_manager_with_not_approved_status) }
+
+  # Can't use the usual UserSession.create(current_user) dance that
+  # the other shared contexts do because we're deliberately bypassing
+  # AuthLogic's validation.
+  before do
+    allow_any_instance_of(ApplicationController).
+      to receive(:current_user).
+      and_return(current_user)
   end
 end
 
