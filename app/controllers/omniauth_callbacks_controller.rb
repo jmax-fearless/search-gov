@@ -22,8 +22,6 @@ class OmniauthCallbacksController < ApplicationController
   end
 
   def destination
-    raise OmniauthError, LandingPageFinder::ACCESS_DENIED_TEXT unless user&.approved?
-
     LandingPageFinder.new(user, @return_to).landing_page
   rescue LandingPageFinder::Error => e
     raise OmniauthError, e.message
