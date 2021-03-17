@@ -43,11 +43,9 @@ shared_context 'not_approved user logged in' do
 
   # Can't use the usual UserSession.create(current_user) dance that
   # the other shared contexts do because we're deliberately bypassing
-  # AuthLogic's validation.
+  # AuthLogic's validation for this context.
   before do
-    allow_any_instance_of(ApplicationController).
-      to receive(:current_user).
-      and_return(current_user)
+    allow(controller).to receive(:current_user).and_return(current_user)
   end
 end
 
