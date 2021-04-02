@@ -244,28 +244,28 @@ workflows:
       - checkout_code:
           matrix:
             parameters:
-              ruby_version: ["2.5.5", "2.7.1"]
+              ruby_version: ["2.5.5"]
 
       - bundle_install:
           requires:
             - checkout_code
           matrix:
             parameters:
-              ruby_version: ["2.5.5", "2.7.1"]
+              ruby_version: ["2.5.5"]
 
       - rspec:
           requires:
             - bundle_install
           matrix:
             parameters:
-              ruby_version: ["2.5.5", "2.7.1"]
+              ruby_version: ["2.5.5"]
 
       - cucumber:
           requires:
             - bundle_install
           matrix:
             parameters:
-              ruby_version: ["2.5.5", "2.7.1"]
+              ruby_version: ["2.5.5"]
 
       - report_coverage:
           requires:
@@ -273,4 +273,4 @@ workflows:
             - cucumber
           matrix:
             parameters:
-              ruby_version: ["2.5.5", "2.7.1"]
+              ruby_version: ["2.5.5"]
