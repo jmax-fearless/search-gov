@@ -83,6 +83,7 @@ describe SearchgovCrawler do
       end
 
       it 'creates searchgov urls' do
+        pending 'SRCH-2034'
         expect(SearchgovUrl).to receive(:create).with(url: 'http://www.agency.gov/')
         expect(SearchgovUrl).to receive(:create).with(url: 'http://www.agency.gov/link1')
         crawl
@@ -98,6 +99,7 @@ describe SearchgovCrawler do
 
         describe '#url_file' do
           it 'contains the crawled links' do
+            pending 'SRCH-2034'
             crawl
             expect(open(crawler.url_file).read).
               to eq "url,depth\nhttp://www.agency.gov/,0\nhttp://www.agency.gov/link1,1\n"
@@ -159,6 +161,7 @@ describe SearchgovCrawler do
         end
 
         it 'strips the anchor fragment' do
+          pending 'SRCH-2034'
           expect(SearchgovUrl).to receive(:create).with(url: "#{base_url}anchor")
           crawl
         end
@@ -173,6 +176,7 @@ describe SearchgovCrawler do
         end
 
         it 'strips the anchor fragment' do
+          pending 'SRCH-2034'
           expect(SearchgovUrl).to receive(:create).with(url: "#{base_url}extra_space")
           crawl
         end
@@ -222,6 +226,7 @@ describe SearchgovCrawler do
         end
 
         it 'creates a searchgov url' do
+          pending 'SRCH-2034'
           expect(SearchgovUrl).to receive(:create).with(url: 'http://www.agency.gov/my_doc.pdf')
           crawl
         end
@@ -231,6 +236,7 @@ describe SearchgovCrawler do
 
           describe '#url_file' do
             it 'contains the crawled links' do
+              pending 'SRCH-2034'
               crawl
               expect(open(crawler.url_file).read).
                 to eq "url,depth\nhttp://www.agency.gov/,0\nhttp://www.agency.gov/my_doc.pdf,1\n"
@@ -290,6 +296,7 @@ describe SearchgovCrawler do
         end
 
         it 'creates a searchgov url for the new location' do
+          pending 'SRCH-2034'
           allow(SearchgovUrl).to receive(:create).with(url: base_url)
           expect(SearchgovUrl).to receive(:create).with(url: new_url)
           crawl
