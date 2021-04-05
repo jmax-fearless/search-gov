@@ -4,6 +4,8 @@ describe TwitterProfilesHelper do
   fixtures :affiliates
 
   describe '#legacy_render_tweet_text' do
+    before { skip 'until SRCH-2042' }
+
     let(:tweet_text) { 'Search Notes for the Week Ending September 21, 2012 - http://t.co/YQQSs9bb http://t.co/YQQSs9bb' }
     let(:tweet) do
       urls = [double(Twitter::Entity::Url,

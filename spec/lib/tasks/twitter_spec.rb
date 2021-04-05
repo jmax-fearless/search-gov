@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Twitter rake tasks' do
+  before { skip 'SRCH-2042' }
+
   before(:all) do
     @rake = Rake::Application.new
     Rake.application = @rake
