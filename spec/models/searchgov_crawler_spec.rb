@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe SearchgovCrawler do
+  before { skip 'until SRCH-2034' }
+
   let(:options) do
     { domain: domain, srsly: true }
   end
