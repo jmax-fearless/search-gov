@@ -1,8 +1,38 @@
 require 'spec_helper'
 
-describe 'Twitter rake tasks' do
-  before { skip 'SRCH-2042' }
+module TweetStream
+  def self.configure
+  end
 
+  def self.reset
+  end
+
+  class Client
+    def on_error(*args)
+    end
+
+    def on_limit(*args)
+    end
+
+    def on_reconnect(*args)
+    end
+
+    def on_delete(*args)
+    end
+
+    def follow(*args)
+    end
+  end
+end
+
+module EventMachine
+  module Twitter
+    class Client
+    end
+  end
+end
+
+describe 'Twitter rake tasks' do
   before(:all) do
     @rake = Rake::Application.new
     Rake.application = @rake
