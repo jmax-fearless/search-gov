@@ -26,13 +26,16 @@ module TwitterData
   end
 
   def self.import_tweet(status)
-    tweet = Tweet.where(tweet_id: status.id).first_or_initialize
+    # DEBUG
+    puts "TwitterData.import_tweet: status: #{status.inspect}"
+
+    tweet = Tweet.where(tweet_id: status['id']).first_or_initialize
     return unless tweet.new_record?
 
     original_status, text = extract_original_status_and_text(status)
     return unless within_tweet_creation_time_threshold?(original_status.created_at)
 
-    import_profile(status.user)
+    import_profile(status['user'])
 
     sanitized_urls = extract_sanitized_urls(original_status)
 
@@ -47,12 +50,12 @@ module TwitterData
   end
 
   def self.extract_original_status_and_text(status)
-    if status.retweet?
-      original_status = status.retweeted_status
-      text = "RT @#{original_status.user.screen_name}: #{original_status.text}"
+    if status['retweeted_status']
+      original_status = status['retweeted_status']
+      text = "RT @#{original_status['user']['screen_name']}: #{original_status['text']}"
     else
       original_status = status
-      text = original_status.text
+      text = original_status['text']
     end
     [original_status, text]
   end
