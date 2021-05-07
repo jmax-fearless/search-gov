@@ -98,6 +98,8 @@ module Usasearch
     ActiveSupport.to_time_preserves_timezone = false
 
     ### End Rails 5.0 config flags
+
+    config.autoloader = :classic
   end
 end
 
