@@ -37,8 +37,8 @@ describe User do
       allow_any_instance_of(described_class).to receive(:affiliates) { [affiliates(:basic_affiliate)] }
     end
 
-    it { is_expected.to validate_presence_of :email }
-    it { is_expected.to validate_uniqueness_of(:email).case_insensitive }
+    xit { is_expected.to validate_presence_of :email }
+    xit { is_expected.to validate_uniqueness_of(:email).case_insensitive }
     it { is_expected.to have_many(:memberships).dependent(:destroy) }
     it { is_expected.to have_many(:affiliates).through :memberships }
 

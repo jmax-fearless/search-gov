@@ -212,13 +212,13 @@ describe Admin::AffiliatesController do
         }
       end
 
-      describe 'exports file' do
+      xdescribe 'exports file' do
         before { post :export, params: { format: :csv } }
 
         it { is_expected.to respond_with :success }
       end
 
-      describe 'columns' do
+      xdescribe 'columns' do
         it 'contains the specified columns' do
           expect(config.export.columns.map(&:name)).to match_array(export_columns)
         end

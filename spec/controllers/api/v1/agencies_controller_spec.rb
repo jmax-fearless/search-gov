@@ -12,7 +12,7 @@ describe Api::V1::AgenciesController do
         AgencyOrganizationCode.create!(organization_code: 'NP01', agency: @agency)
       end
 
-      it 'should return valid JSON with just the first organization code' do
+      xit 'should return valid JSON with just the first organization code' do
         get :search,
             params: {
               query: 'the nps'
@@ -25,7 +25,7 @@ describe Api::V1::AgenciesController do
     end
 
     context 'when search returns nil or raises an exception' do
-      it 'should return error string' do
+      xit 'should return error string' do
         get :search,
             params: {
               query: 'error',

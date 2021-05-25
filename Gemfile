@@ -17,7 +17,7 @@ gem 'authlogic', '~> 6.1.0'
 gem 'omniauth_login_dot_gov', git: 'https://github.com/18f/omniauth_login_dot_gov',
                               ref: '08ce9b5322efb2d82b2df3f6d774308c4028ee6c'
 gem 'omniauth-rails_csrf_protection', '~> 0.1.2'
-gem 'airbrake', '~> 7.1.1'
+gem 'airbrake', '~> 11.0.3'
 gem 'yajl-ruby', '~> 1.3.1', :require => 'yajl'
 gem 'redis', '~> 4.0.1'
 gem 'redis-namespace', '~> 1.6.0'

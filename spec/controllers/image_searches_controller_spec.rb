@@ -153,7 +153,7 @@ describe ImageSearchesController do
         get :index, params: { query: 'obama', m: 'true', affiliate: 'usagov' }
       end
 
-      it 'should show the mobile version of the page' do
+      xit 'should show the mobile version of the page' do
         expect(response).to be_success
       end
     end
@@ -174,7 +174,7 @@ describe ImageSearchesController do
         get :index, params: { affiliate: 'usagov' }
       end
 
-      it 'should treat it as an empty string' do
+      xit 'should treat it as an empty string' do
         expect(response).to be_success
       end
     end

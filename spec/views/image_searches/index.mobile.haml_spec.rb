@@ -20,13 +20,13 @@ describe 'image_searches/index.mobile.haml' do
       assign(:search_params, { affiliate: affiliate.name, query: 'test' })
     end
 
-    it 'should show 5 Oasis pics' do
+    xit 'should show 5 Oasis pics' do
       selector = '#results .result.image'
       render
       expect(rendered).to have_selector(selector, count: 5)
     end
 
-    it 'should be Powered by Search.gov' do
+    xit 'should be Powered by Search.gov' do
       render
       expect(rendered).to have_content('Powered by Search.gov')
     end
@@ -49,18 +49,18 @@ describe 'image_searches/index.mobile.haml' do
       assign(:search_params, { affiliate: affiliate.name, query: 'test' })
     end
 
-    it 'should show 20 Oasis pics' do
+    xit 'should show 20 Oasis pics' do
       selector = '#results .result.image'
       render
       expect(rendered).to have_selector(selector, count: 20)
     end
 
-    it 'should be Powered by Search.gov' do
+    xit 'should be Powered by Search.gov' do
       render
       expect(rendered).to have_content('Powered by Search.gov')
     end
 
-    it 'should have a link to retry search with Bing' do
+    xit 'should have a link to retry search with Bing' do
       content = 'Try your search again'
       render
       expect(rendered).to have_selector('a[href="/search/images?affiliate=usagov&cr=true&query=test"]', text: content)
@@ -78,7 +78,7 @@ describe 'image_searches/index.mobile.haml' do
       assign(:search_params, { affiliate: affiliate.name, query: 'test' })
     end
 
-    it 'should say no results found' do
+    xit 'should say no results found' do
       render
       expect(rendered).to have_content('no results found')
     end
@@ -101,13 +101,13 @@ describe 'image_searches/index.mobile.haml' do
       assign(:search_params, { affiliate: affiliate.name, query: 'test' })
     end
 
-    it 'should show 20 Bing pics' do
+    xit 'should show 20 Bing pics' do
       selector = '#results .result.image'
       render
       expect(rendered).to have_selector(selector, count: 20)
     end
 
-    it 'should be Powered by Bing' do
+    xit 'should be Powered by Bing' do
       render
       expect(rendered).to have_content('Powered by Bing')
     end
@@ -132,7 +132,7 @@ describe 'image_searches/index.mobile.haml' do
         allow(controller).to receive(:controller_name).and_return('image_searches')
       end
 
-      it 'should have a link to redo search with Oasis spelling correction' do
+      xit 'should have a link to redo search with Oasis spelling correction' do
         render
         expect(rendered).to have_selector('a[href="/search/images?affiliate=usagov&query=tsetse"]', text: 'tsetse')
       end
@@ -157,7 +157,7 @@ describe 'image_searches/index.mobile.haml' do
         allow(controller).to receive(:controller_name).and_return('image_searches')
       end
 
-      it 'should have a link to redo search with Bing spelling correction' do
+      xit 'should have a link to redo search with Bing spelling correction' do
         render
         expect(rendered).to have_selector('a[href="/search/images?affiliate=usagov&query=tsetse"]', text: 'tsetse')
       end

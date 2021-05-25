@@ -18,13 +18,13 @@ describe EmailTemplate do
   end
 
   describe '#load_default_templates' do
-    it 'should load all the templates when no parameter is passed in' do
+    xit 'should load all the templates when no parameter is passed in' do
       described_class.load_default_templates
       expect(described_class.count).to eq(EmailTemplate::DEFAULT_SUBJECT_HASH.size)
     end
 
     context 'when specifying a specific set of templates' do
-      it 'should only reload those templates, and leave the rest alone' do
+      xit 'should only reload those templates, and leave the rest alone' do
         expect(described_class.count).to eq(EmailTemplate::DEFAULT_SUBJECT_HASH.size)
         before_time = Time.now
         sleep(1)

@@ -20,7 +20,7 @@ describe Admin::SuperfreshUrlsBulkUploadController do
         UserSession.create(@user)
       end
 
-      it 'should allow the admin to manage superfresh urls' do
+      xit 'should allow the admin to manage superfresh urls' do
         get :index
         expect(response).to be_success
       end
