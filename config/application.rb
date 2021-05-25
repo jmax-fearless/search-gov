@@ -1,14 +1,6 @@
 require_relative 'boot'
 
 require 'rails/all'
-require './lib/middlewares/reject_invalid_request_uri.rb'
-require './lib/middlewares/downcase_route.rb'
-require './lib/middlewares/adjust_client_ip.rb'
-require './lib/middlewares/filtered_jsonp.rb'
-
-
-GC.copy_on_write_friendly = true if GC.respond_to?(:copy_on_write_friendly=)
-GC::Profiler.enable
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -24,8 +16,9 @@ module Usasearch
     config.enable_dependency_loading = true
 
     # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    # Application configuration can go into files in config/initializers
+    # -- all .rb files in that directory are automatically loaded after loading
+    # the framework and any gems in your application.
 
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += Dir[config.root.join('lib', '**/').to_s]
@@ -86,14 +79,8 @@ module Usasearch
     config.active_record.belongs_to_required_by_default = false
     ### End Rails 5.0 config flags
 
-
+    # Turn on the classic autoloader, because zeitwerk blows
+    # up. SRCH-2286 is the ticket to move i14y to zeitwerk.
     config.autoloader = :classic
   end
 end
-
-
-SEARCH_ENGINES = %w(BingV6 BingV7 Google SearchGov).freeze
-DEFAULT_USER_AGENT = Rails.application.secrets.organization[:default_user_agent].freeze
-
-require 'resque/plugins/priority'
-require 'csv'

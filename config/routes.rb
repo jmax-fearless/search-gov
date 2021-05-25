@@ -275,4 +275,6 @@ Rails.application.routes.draw do
   get "/c/admin/:site_name" => 'dev#null', :as => :search_consumer_admin
   get "/c/search/rss" => 'dev#null', :as => :search_consumer_news_search
   get "/c/search/docs" => 'dev#null', :as => :search_consumer_docs_search
+
+  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
