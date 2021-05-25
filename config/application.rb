@@ -82,22 +82,10 @@ module Usasearch
     config.active_job.queue_adapter = :resque
 
     ### Rails 5.0 config flags
-    ### SRCH-1058: The flags below should be flipped one by one to the new default.
-
-    # Enable per-form CSRF tokens. Versions before Rails 5.0 had false.
-    config.action_controller.per_form_csrf_tokens = false
-
-    # Enable origin-checking CSRF mitigation.  Versions before Rails 5.0 had false.
-    config.action_controller.forgery_protection_origin_check = false
-
     # Require `belongs_to` associations by default. Versions before Rails 5.0 had false.
     config.active_record.belongs_to_required_by_default = false
-
-    # Make Ruby 2.4+ preserve the timezone of the receiver when calling `to_time`.
-    # Versions before Rails 5.0 had false.
-    ActiveSupport.to_time_preserves_timezone = false
-
     ### End Rails 5.0 config flags
+
 
     config.autoloader = :classic
   end
