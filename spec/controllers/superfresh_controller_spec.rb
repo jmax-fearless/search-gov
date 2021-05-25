@@ -5,7 +5,7 @@ describe SuperfreshController, '#index' do
   let(:affiliate) { affiliates(:basic_affiliate) }
   it 'should set the request fomat to :rss' do
     get :index
-    expect(response.content_type).to eq('application/rss+xml')
+    expect(response.content_type).to eq('application/rss+xml; charset=utf-8')
   end
 
   context 'when there are no URLs' do
