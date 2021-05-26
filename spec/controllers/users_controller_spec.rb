@@ -131,7 +131,7 @@ describe UsersController do
       context 'when the is not saved successfully' do
         before do
           expect(current_user).to receive(:save).
-            with( context: :update_account ).and_return(false)
+            with( context: :update_account).and_return(false)
 
           update_account
         end

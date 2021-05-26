@@ -1,6 +1,13 @@
 require_relative 'boot'
 
 require 'rails/all'
+require './lib/middlewares/reject_invalid_request_uri.rb'
+require './lib/middlewares/downcase_route.rb'
+require './lib/middlewares/adjust_client_ip.rb'
+require './lib/middlewares/filtered_jsonp.rb'
+
+GC.copy_on_write_friendly = true if GC.respond_to?(:copy_on_write_friendly=)
+GC::Profiler.enable
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -84,3 +91,9 @@ module Usasearch
     config.autoloader = :classic
   end
 end
+
+SEARCH_ENGINES = %w(BingV6 BingV7 Google SearchGov).freeze
+DEFAULT_USER_AGENT = Rails.application.secrets.organization[:default_user_agent].freeze
+
+require 'resque/plugins/priority'
+require 'csv'
